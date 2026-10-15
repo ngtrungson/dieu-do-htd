@@ -631,7 +631,7 @@
     .rank-medal { font-weight: 700; }
 
     .modal-backdrop {
-      position: fixed; inset: 0; background: rgba(2,6,23,0.75); z-index: 200;
+      position: fixed; top: 0; right: 0; bottom: 0; left: 0; background: rgba(2,6,23,0.75); z-index: 200;
       display: none; align-items: flex-start; justify-content: center; padding: 40px 16px; overflow-y: auto;
     }
     .modal-backdrop.show { display: flex; }
@@ -645,11 +645,70 @@
     .modal .btn-row { justify-content: flex-end; }
     .modal .btn-row .btn { flex: unset; min-width: 120px; }
 
+    /* ===== TƯƠNG THÍCH ĐIỆN THOẠI, MÁY TÍNH BẢNG & NHIỀU TRÌNH DUYỆT ===== */
+    html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+    button, input, select, textarea { font-family: inherit; }
+    /* Cho phép cột lưới co lại, bảng rộng tự cuộn ngang bên trong khung */
+    .workspace-grid > *, .bottom-grid > *, .guide-grid > *, .submit-row > *, .progress-grid > * { min-width: 0; }
+    .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .svg-box { -webkit-overflow-scrolling: touch; }
+
+    @media (max-width: 1100px) {
+      /* Máy tính bảng: thanh tab xuống dòng thay vì ép chữ */
+      .nav-tabs { flex-wrap: wrap; gap: 6px; padding: 12px 24px; overflow-x: visible; }
+      .tab-btn { flex: 1 1 auto; justify-content: center; border-radius: 8px; border-bottom: 1px solid var(--border); padding: 10px 14px; }
+      .tab-btn > span:first-child { white-space: nowrap; }
+    }
+
+    @media (max-width: 900px) {
+      /* Đầu trang không dính khi màn hình nhỏ để không che nội dung */
+      .scada-header { position: static; }
+    }
+
     @media (max-width: 700px) {
-      .scada-header { padding: 12px 16px; }
+      .scada-header { padding: 12px 16px; gap: 12px; }
+      .brand-title h1 { font-size: 0.98rem; }
+      .brand-title span { font-size: 0.72rem; }
+      .student-bar { display: grid; grid-template-columns: 1fr 1fr; width: 100%; gap: 8px; }
+      .student-bar #studentName { grid-column: 1 / -1; }
+      .student-bar input { width: auto !important; min-width: 0; }
+      .student-bar .btn { width: 100%; }
+      .clock-box { display: none; }
+
+      .nav-tabs { flex-wrap: wrap; gap: 6px; padding: 10px 16px; overflow-x: visible; }
+      .tab-btn {
+        flex: 1 1 calc(50% - 6px); justify-content: center; text-align: center;
+        border-radius: 8px; border-bottom: 1px solid var(--border);
+        padding: 8px 10px; font-size: 0.76rem;
+      }
+      .tab-btn .tab-badge { display: none; }
+      .tab-btn > span:first-child { white-space: normal; }
+      /* Bảng rộng giữ cột đọc được, vuốt ngang để xem */
+      .bottom-grid table.report-table { min-width: 760px; }
+      #tab-board table.report-table { min-width: 820px; }
+
       .container { padding: 16px; }
-      .nav-tabs { padding: 12px 16px 0; }
-      .student-bar input { flex: 1 1 140px; }
+      .panel { padding: 14px; }
+      .kpi-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .kpi-card { padding: 10px 12px; }
+      .kpi-value { font-size: 1.1rem; overflow-wrap: anywhere; }
+      .kpi-label { font-size: 0.7rem; }
+      .panel-title { flex-wrap: wrap; gap: 6px; }
+      /* Sơ đồ SVG giữ kích thước đọc được, vuốt ngang để xem hết */
+      .svg-box svg { min-width: 620px; }
+      .bar-label-line { gap: 8px; }
+      .modal-backdrop { padding: 16px 10px; }
+      .modal { padding: 16px; }
+      .modal .btn-row .btn { flex: 1 1 auto; min-width: 0; }
+      .score-big { font-size: 1.8rem; }
+    }
+
+    /* Màn hình cảm ứng: vùng chạm lớn hơn, ô nhập ≥ 16px để iPhone không tự phóng to */
+    @media (pointer: coarse) {
+      input[type="range"] { height: 32px; background: transparent; }
+      input[type="text"], input[type="search"], textarea, textarea.conclusion, select, .note-input { font-size: 16px; }
+      .btn { min-height: 40px; }
+      .scenario-btn { padding: 12px; }
     }
   </style>
 </head>
@@ -726,6 +785,7 @@
           <div class="tip">Bài làm được tự động lưu trên trình duyệt đang dùng. Nếu đổi máy hoặc xóa dữ liệu trình duyệt, bài làm chưa nộp sẽ mất, nên hãy <b>Xuất Báo cáo (.CSV)</b> để giữ bản dự phòng.</div>
 
           <h4>Thang điểm (100 điểm → quy về hệ 10)</h4>
+          <div class="table-scroll">
           <table class="report-table" style="margin-top:6px;">
             <thead><tr><th>Phần</th><th>Tiêu chí</th><th class="num">Điểm</th></tr></thead>
             <tbody>
@@ -742,6 +802,7 @@
               <tr><td colspan="2"><b>Tổng</b>: 9 kịch bản × 10 + Nhận xét 10 = 100 điểm, điểm hệ 10 = Tổng / 10</td><td class="num"><b>100</b></td></tr>
             </tbody>
           </table>
+          </div>
         </div>
 
         <div class="panel guide-panel">
