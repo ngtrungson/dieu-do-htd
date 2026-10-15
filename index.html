@@ -1,0 +1,1759 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hệ thống Mô phỏng Điều độ Hệ thống Điện (EMS/SCADA Simulator)</title>
+  <style>
+    :root {
+      --bg-main: #0b1120;
+      --bg-panel: #111827;
+      --bg-card: #1e293b;
+      --bg-input: #0f172a;
+      --border: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --ok: #22c55e;
+      --ok-bg: rgba(34, 197, 94, 0.15);
+      --warn: #f59e0b;
+      --warn-bg: rgba(245, 158, 11, 0.15);
+      --danger: #ef4444;
+      --danger-bg: rgba(239, 68, 68, 0.18);
+      --font-mono: 'JetBrains Mono', 'Consolas', 'Courier New', monospace;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      line-height: 1.5;
+      padding-bottom: 40px;
+    }
+
+    /* HEADER SCADA */
+    .scada-header {
+      background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%);
+      border-bottom: 2px solid var(--border);
+      padding: 14px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .status-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: var(--ok);
+      box-shadow: 0 0 10px var(--ok);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .brand-title h1 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #fff;
+    }
+
+    .brand-title span {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--accent);
+      font-family: var(--font-mono);
+    }
+
+    .student-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .student-bar input {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 7px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
+
+    .student-bar input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .clock-box {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      background: var(--bg-input);
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      color: var(--accent);
+    }
+
+    /* NAVIGATION TABS */
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+      padding: 16px 24px 0;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-panel);
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      background: var(--bg-card);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      border-bottom: none;
+      padding: 12px 20px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      border-radius: 8px 8px 0 0;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+      background: #283548;
+    }
+
+    .tab-btn.active {
+      background: var(--bg-main);
+      color: var(--accent);
+      border-top: 3px solid var(--accent);
+    }
+
+    .tab-badge {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+    }
+
+    /* MAIN LAYOUT */
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 20px 24px;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* KPI ROW */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      transition: all 0.2s;
+    }
+
+    .kpi-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .kpi-value {
+      font-family: var(--font-mono);
+      font-size: 1.55rem;
+      font-weight: 700;
+    }
+
+    .kpi-sub {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .status-ok {
+      border-left: 4px solid var(--ok);
+      background: linear-gradient(180deg, var(--bg-card) 0%, var(--ok-bg) 100%);
+    }
+
+    .status-warn {
+      border-left: 4px solid var(--warn);
+      background: linear-gradient(180deg, var(--bg-card) 0%, var(--warn-bg) 100%);
+    }
+
+    .status-danger {
+      border-left: 4px solid var(--danger);
+      background: linear-gradient(180deg, var(--bg-card) 0%, var(--danger-bg) 100%);
+    }
+
+    /* WORKSPACE GRID */
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 1024px) {
+      .workspace-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+    }
+
+    .panel-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* SCENARIO BUTTONS */
+    .scenario-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .scenario-btn {
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      border-radius: 8px;
+      text-align: left;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.15s;
+    }
+
+    .scenario-btn:hover {
+      border-color: var(--accent);
+    }
+
+    .scenario-btn.active {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: var(--accent);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .scenario-desc {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+      font-weight: 400;
+    }
+
+    /* SLIDER CONTROLS */
+    .control-group {
+      margin-bottom: 16px;
+      background: var(--bg-card);
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .control-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.86rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .control-val {
+      font-family: var(--font-mono);
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .control-meta {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+      cursor: pointer;
+      height: 6px;
+      background: var(--bg-input);
+      border-radius: 4px;
+    }
+
+    .range-limits {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      margin-top: 4px;
+    }
+
+    /* ACTION BUTTONS */
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 9px 14px;
+      border-radius: 6px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+      flex: 1;
+      text-align: center;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #0f172a;
+    }
+
+    .btn-primary:hover {
+      background: #7dd3fc;
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text-main);
+      border-color: var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent);
+    }
+
+    .btn-success {
+      background: var(--ok);
+      color: #052e16;
+    }
+
+    .btn-success:hover {
+      background: #4ade80;
+    }
+
+    /* VISUALIZATION BARS & SVG */
+    .viz-container {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .svg-box {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .bar-chart-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .bar-row {
+      margin-bottom: 12px;
+    }
+
+    .bar-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .bar-label-line {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.83rem;
+      margin-bottom: 5px;
+    }
+
+    .bar-track {
+      width: 100%;
+      height: 22px;
+      background: var(--bg-input);
+      border-radius: 5px;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid var(--border);
+    }
+
+    .bar-fill {
+      height: 100%;
+      transition: width 0.3s ease, background-color 0.3s ease;
+      border-radius: 4px;
+    }
+
+    .bar-limit-marker {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #f8fafc;
+      z-index: 2;
+    }
+
+    /* LAB REPORT & LOG SECTION */
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 20px;
+      margin-top: 24px;
+    }
+
+    @media (max-width: 1024px) {
+      .bottom-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    table.report-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+
+    table.report-table th,
+    table.report-table td {
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      text-align: left;
+    }
+
+    table.report-table th {
+      background: var(--bg-card);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    table.report-table td {
+      font-family: var(--font-mono);
+    }
+
+    .log-console {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      height: 210px;
+      overflow-y: auto;
+      padding: 10px 12px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+    }
+
+    .log-entry {
+      margin-bottom: 6px;
+      padding-bottom: 4px;
+      border-bottom: 1px dashed #1e293b;
+    }
+
+    .log-time {
+      color: var(--accent);
+      margin-right: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER SCADA -->
+  <header class="scada-header">
+    <div class="brand-title">
+      <div class="status-dot" id="globalStatusDot"></div>
+      <div>
+        <h1>TRUNG TÂM ĐIỀU ĐỘ HỆ THỐNG ĐIỆN QUỐC GIA (EMS SIMULATOR)</h1>
+        <span>Phòng thí nghiệm Vận hành & Điều khiển Hệ thống điện — Chuẩn 50,00 Hz</span>
+      </div>
+    </div>
+
+    <div class="student-bar">
+      <input type="text" id="studentName" placeholder="Họ và tên sinh viên..." />
+      <input type="text" id="studentId" placeholder="MSSV / Lớp..." style="width: 140px;" />
+      <button class="btn btn-success" onclick="exportCSVReport()" style="flex: unset;">Xuất Báo cáo (.CSV)</button>
+      <div class="clock-box" id="scadaClock">00:00:00</div>
+    </div>
+  </header>
+
+  <!-- NAVIGATION TABS -->
+  <nav class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('tab-pf', this)">
+      <span>PHÂN HỆ 1: ĐIỀU ĐỘ TẦN SỐ</span>
+      <span class="tab-badge">P - f</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('tab-qv', this)">
+      <span>PHÂN HỆ 2: ĐIỀU ĐỘ ĐIỆN ÁP & PHẢN KHÁNG</span>
+      <span class="tab-badge">Q - V</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('tab-mva', this)">
+      <span>PHÂN HỆ 3: NGHẼN MẠCH & GIỚI HẠN NHIỆT</span>
+      <span class="tab-badge">MVA / PTDF / OPF</span>
+    </button>
+  </nav>
+
+  <main class="container">
+    <!-- ================================================================= -->
+    <!-- TAB 1: ĐIỀU ĐỘ CÔNG SUẤT TÁC DỤNG & TẦN SỐ (P - f)                 -->
+    <!-- ================================================================= -->
+    <section id="tab-pf" class="tab-content active">
+      <div class="kpi-grid">
+        <div class="kpi-card" id="pf-card-freq">
+          <div class="kpi-label">Tần số Hệ thống (f)</div>
+          <div class="kpi-value" id="pf-val-freq">50.00 Hz</div>
+          <div class="kpi-sub">Dải chuẩn: 49,80 – 50,20 Hz</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Độ lệch Công suất (ΔP)</div>
+          <div class="kpi-value" id="pf-val-deltap">0 MW</div>
+          <div class="kpi-sub" id="pf-sub-genload">Phát: 0 MW | Tải: 0 MW</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Tổng Chi phí Vận hành</div>
+          <div class="kpi-value" id="pf-val-cost">0 Tr.đ/h</div>
+          <div class="kpi-sub" id="pf-sub-unitcost">Chi phí bình quân: 0 đ/kWh</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Dự trữ Quay Nguồn linh hoạt</div>
+          <div class="kpi-value" id="pf-val-reserve">0 MW</div>
+          <div class="kpi-sub">Yêu cầu an ninh tối thiểu: 300 MW</div>
+        </div>
+        <div class="kpi-card" id="pf-card-status">
+          <div class="kpi-label">Trạng thái An ninh Tần số</div>
+          <div class="kpi-value" id="pf-val-status" style="font-size: 1.15rem;">ỔN ĐỊNH</div>
+          <div class="kpi-sub" id="pf-sub-relay">Rơ-le UFLS: Đang chờ (49,0 Hz)</div>
+        </div>
+      </div>
+
+      <div class="workspace-grid">
+        <!-- Bảng Điều khiển P-f -->
+        <div class="panel">
+          <div class="panel-title">
+            <span>Bảng Lệnh Điều độ Nguồn (P-f)</span>
+            <span style="font-size:0.75rem; color:var(--text-muted);">K_ht = 1000 MW/Hz</span>
+          </div>
+
+          <div class="scenario-list">
+            <button class="scenario-btn active" id="pf-scen-1" onclick="loadPFScenario(1)">
+              1. Cao điểm tối 19:00 (Phụ tải đỉnh)
+              <div class="scenario-desc">Phụ tải: 4.200 MW | Khả dụng NLTT: 300 MW (Hết bức xạ mặt trời)</div>
+            </button>
+            <button class="scenario-btn" id="pf-scen-2" onclick="loadPFScenario(2)">
+              2. Giờ trưa 12:00 (Đỉnh điện mặt trời)
+              <div class="scenario-desc">Phụ tải: 2.800 MW | Khả dụng NLTT: 2.000 MW (Nguy cơ thừa nguồn)</div>
+            </button>
+            <button class="scenario-btn" id="pf-scen-3" onclick="loadPFScenario(3)">
+              3. Sự cố N-1 (Nhảy tổ máy than 600 MW)
+              <div class="scenario-desc">Phụ tải: 3.800 MW | Giới hạn Nhiệt điện than giảm còn 1.400 MW</div>
+            </button>
+          </div>
+
+          <div class="control-group">
+            <div class="control-header">
+              <span>Nhiệt điện than (Chạy nền)</span>
+              <span class="control-val" id="pf-lbl-coal">1800 MW</span>
+            </div>
+            <div class="control-meta">Chi phí: 1,25 triệu VNĐ/MWh | Tối thiểu kỹ thuật P_min = 600 MW</div>
+            <input type="range" id="pf-slider-coal" min="600" max="2200" step="20" value="1800" oninput="updatePF()" />
+            <div class="range-limits"><span>600 MW</span><span id="pf-max-coal-lbl">2200 MW</span></div>
+          </div>
+
+          <div class="control-group">
+            <div class="control-header">
+              <span>Thủy điện & Tua-bin khí (Điều tần)</span>
+              <span class="control-val" id="pf-lbl-hydro">1600 MW</span>
+            </div>
+            <div class="control-meta">Chi phí: 1,85 triệu VNĐ/MWh | Linh hoạt phủ đỉnh & dự trữ quay</div>
+            <input type="range" id="pf-slider-hydro" min="0" max="2500" step="20" value="1600" oninput="updatePF()" />
+            <div class="range-limits"><span>0 MW</span><span>2500 MW</span></div>
+          </div>
+
+          <div class="control-group">
+            <div class="control-header">
+              <span>Tỷ lệ nhận Năng lượng tái tạo (NLTT)</span>
+              <span class="control-val" id="pf-lbl-res">100% (300 MW)</span>
+            </div>
+            <div class="control-meta">Chi phí: 0,20 triệu VNĐ/MWh | Giảm tỷ lệ = Cắt giảm (Curtailment)</div>
+            <input type="range" id="pf-slider-res" min="0" max="100" step="5" value="100" oninput="updatePF()" />
+            <div class="range-limits"><span>0% (Cắt hết)</span><span>100% (Tối đa)</span></div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn-secondary" onclick="autoAGC_PF()">Tự động Điều tần (AGC 50Hz)</button>
+            <button class="btn btn-primary" onclick="recordResult('P-f')">Ghi nhận Kịch bản vào Báo cáo</button>
+          </div>
+        </div>
+
+        <!-- Khu vực Hiển thị Trực quan P-f -->
+        <div class="panel viz-container">
+          <div class="panel-title">
+            <span>Đồng hồ Tần số & Sơ đồ Cân bằng Công suất Hệ thống</span>
+            <span id="pf-scen-badge" style="font-size:0.8rem; color:var(--text-main);">Kịch bản 1</span>
+          </div>
+
+          <!-- SVG Đồng hồ tần số & Thanh cái trung tâm -->
+          <div class="svg-box">
+            <svg viewBox="0 0 800 210" width="100%" height="210">
+              <!-- Khung thước đo tần số ngang -->
+              <rect x="40" y="25" width="720" height="36" rx="6" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+              <!-- Vùng nguy hiểm thấp (<49.5) -->
+              <rect x="40" y="25" width="180" height="36" rx="4" fill="rgba(239,68,68,0.35)"/>
+              <!-- Vùng cảnh báo thấp (49.5 - 49.8) -->
+              <rect x="220" y="25" width="108" height="36" fill="rgba(245,158,11,0.35)"/>
+              <!-- Vùng an toàn (49.8 - 50.2) -->
+              <rect x="328" y="25" width="144" height="36" fill="rgba(34,197,94,0.4)"/>
+              <!-- Vùng cảnh báo cao (50.2 - 50.5) -->
+              <rect x="472" y="25" width="108" height="36" fill="rgba(245,158,11,0.35)"/>
+              <!-- Vùng nguy hiểm cao (>50.5) -->
+              <rect x="580" y="25" width="180" height="36" rx="4" fill="rgba(239,68,68,0.35)"/>
+
+              <!-- Nhãn mốc tần số -->
+              <text x="40" y="18" fill="#94a3b8" font-size="11" font-family="monospace">49.00 Hz (UFLS)</text>
+              <text x="205" y="18" fill="#f59e0b" font-size="11" font-family="monospace">49.50</text>
+              <text x="315" y="18" fill="#22c55e" font-size="11" font-family="monospace">49.80</text>
+              <text x="385" y="18" fill="#ffffff" font-size="12" font-weight="bold" font-family="monospace">50.00 Hz</text>
+              <text x="460" y="18" fill="#22c55e" font-size="11" font-family="monospace">50.20</text>
+              <text x="565" y="18" fill="#f59e0b" font-size="11" font-family="monospace">50.50</text>
+              <text x="705" y="18" fill="#94a3b8" font-size="11" font-family="monospace">51.00 Hz</text>
+
+              <!-- Kim chỉ thị tần số -->
+              <g id="pf-svg-needle" transform="translate(400, 0)">
+                <polygon points="0,20 -8,68 8,68" fill="#38bdf8" stroke="#0f172a" stroke-width="1.5"/>
+                <rect x="-42" y="70" width="84" height="24" rx="4" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+                <text id="pf-svg-freq-txt" x="0" y="86" fill="#38bdf8" font-size="12" font-weight="bold" font-family="monospace" text-anchor="middle">50.00 Hz</text>
+              </g>
+
+              <!-- Thanh cái 500kV trung tâm -->
+              <line x1="80" y1="145" x2="720" y2="145" stroke="#38bdf8" stroke-width="6"/>
+              <text x="400" y="136" fill="#94a3b8" font-size="11" font-family="monospace" text-anchor="middle">THANH CÁI HỆ THỐNG LIÊN KẾT QUỐC GIA (500 kV - 50 Hz)</text>
+
+              <!-- Các nhánh nguồn & phụ tải -->
+              <text id="pf-svg-g1" x="140" y="185" fill="#f8fafc" font-size="12" font-family="monospace" text-anchor="middle">Than: 1800 MW</text>
+              <line x1="140" y1="145" x2="140" y2="168" stroke="#22c55e" stroke-width="3"/>
+
+              <text id="pf-svg-g2" x="310" y="185" fill="#f8fafc" font-size="12" font-family="monospace" text-anchor="middle">Thủy+Khí: 1600 MW</text>
+              <line x1="310" y1="145" x2="310" y2="168" stroke="#22c55e" stroke-width="3"/>
+
+              <text id="pf-svg-g3" x="480" y="185" fill="#f8fafc" font-size="12" font-family="monospace" text-anchor="middle">NLTT: 300 MW</text>
+              <line x1="480" y1="145" x2="480" y2="168" stroke="#22c55e" stroke-width="3"/>
+
+              <text id="pf-svg-load" x="650" y="185" fill="#f59e0b" font-size="12" font-weight="bold" font-family="monospace" text-anchor="middle">Phụ tải: 4200 MW</text>
+              <line x1="650" y1="145" x2="650" y2="168" stroke="#f59e0b" stroke-width="3"/>
+            </svg>
+          </div>
+
+          <!-- Biểu đồ cột so sánh công suất -->
+          <div class="bar-chart-box">
+            <div style="font-size:0.86rem; font-weight:600; margin-bottom:12px; color:var(--text-muted);">
+              BIỂU ĐỒ CƠ CẤU NGUỒN PHÁT & CÂN BẰNG PHỤ TẢI (ĐƠN VỊ: MW — THANG ĐO 5.000 MW)
+            </div>
+
+            <div class="bar-row">
+              <div class="bar-label-line">
+                <span>1. Nhiệt điện than (Chạy nền)</span>
+                <span id="pf-bar-txt-coal" style="font-family:var(--font-mono);">1800 MW</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-fill" id="pf-bar-coal" style="width:36%; background:#64748b;"></div>
+              </div>
+            </div>
+
+            <div class="bar-row">
+              <div class="bar-label-line">
+                <span>2. Thủy điện & Tua-bin khí (Linh hoạt / Điều tần)</span>
+                <span id="pf-bar-txt-hydro" style="font-family:var(--font-mono);">1600 MW</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-fill" id="pf-bar-hydro" style="width:32%; background:#0ea5e9;"></div>
+              </div>
+            </div>
+
+            <div class="bar-row">
+              <div class="bar-label-line">
+                <span>3. Điện mặt trời & Điện gió (NLTT thực phát)</span>
+                <span id="pf-bar-txt-res" style="font-family:var(--font-mono);">300 MW</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-fill" id="pf-bar-res" style="width:6%; background:#10b981;"></div>
+              </div>
+            </div>
+
+            <div class="bar-row" style="margin-top:16px; padding-top:10px; border-top:1px dashed var(--border);">
+              <div class="bar-label-line">
+                <span style="font-weight:700; color:var(--accent);">TỔNG CÔNG SUẤT PHÁT TOÀN HỆ THỐNG (P_phát)</span>
+                <span id="pf-bar-txt-total" style="font-family:var(--font-mono); font-weight:700;">3700 MW</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-fill" id="pf-bar-total" style="width:74%; background:#38bdf8;"></div>
+              </div>
+            </div>
+
+            <div class="bar-row">
+              <div class="bar-label-line">
+                <span style="font-weight:700; color:var(--warn);">PHỤ TẢI YÊU CẦU TOÀN HỆ THỐNG (P_tải)</span>
+                <span id="pf-bar-txt-load" style="font-family:var(--font-mono); font-weight:700;">4200 MW</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-fill" id="pf-bar-load" style="width:84%; background:#f59e0b;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- TAB 2: ĐIỀU ĐỘ ĐIỆN ÁP & CÔNG SUẤT PHẢN KHÁNG (Q - V)              -->
+    <!-- ================================================================= -->
+    <section id="tab-qv" class="tab-content">
+      <div class="kpi-grid">
+        <div class="kpi-card" id="qv-card-v4">
+          <div class="kpi-label">Điện áp Phụ tải Nút 4 (V4)</div>
+          <div class="kpi-value" id="qv-val-v4">0.920 p.u.</div>
+          <div class="kpi-sub">Dải chuẩn: 0,950 – 1,050 p.u.</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Hệ số Công suất tại Phụ tải (cosφ)</div>
+          <div class="kpi-value" id="qv-val-pf">0.845</div>
+          <div class="kpi-sub" id="qv-sub-qnet">Q nhận từ lưới: 380 MVAr</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Tổn thất Công suất Đường dây (ΔP)</div>
+          <div class="kpi-value" id="qv-val-loss">14.20 MW</div>
+          <div class="kpi-sub">Giảm dòng Q giúp giảm tổn thất ΔP</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Dòng Phản kháng Đường dây 500kV</div>
+          <div class="kpi-value" id="qv-val-q12">360 MVAr</div>
+          <div class="kpi-sub">Truyền từ Nút 1 sang Nút 2</div>
+        </div>
+        <div class="kpi-card" id="qv-card-status">
+          <div class="kpi-label">Trạng thái An ninh Điện áp</div>
+          <div class="kpi-value" id="qv-val-status" style="font-size: 1.15rem;">CẢNH BÁO THẤP ÁP</div>
+          <div class="kpi-sub" id="qv-sub-status">Kiểm tra bù Q và nấc phân áp OLTC</div>
+        </div>
+      </div>
+
+      <div class="workspace-grid">
+        <!-- Bảng Điều khiển Q-V -->
+        <div class="panel">
+          <div class="panel-title">
+            <span>Bảng Điều khiển Điện áp & Bù Q (Q-V)</span>
+            <span style="font-size:0.75rem; color:var(--text-muted);">Lưới 4 Nút</span>
+          </div>
+
+          <div class="scenario-list">
+            <button class="scenario-btn active" id="qv-scen-1" onclick="loadQVScenario(1)">
+              1. Cao điểm chiều (Phụ tải cảm lớn)
+              <div class="scenario-desc">P_tải = 600 MW, Q_tải = 380 MVAr | Sụt áp nặng cuối nguồn</div>
+            </button>
+            <button class="scenario-btn" id="qv-scen-2" onclick="loadQVScenario(2)">
+              2. Thấp điểm đêm (Hiệu ứng Ferranti quá áp)
+              <div class="scenario-desc">P_tải = 120 MW, Q_tải = 30 MVAr | Dung dẫn đường dây sinh 280 MVAr</div>
+            </button>
+            <button class="scenario-btn" id="qv-scen-3" onclick="loadQVScenario(3)">
+              3. Sự cố N-1 (Nhảy 1 mạch đường dây 500 kV)
+              <div class="scenario-desc">Tổng trở đường dây 1-2 tăng gấp đôi | Nguy cơ sụp đổ điện áp</div>
+            </button>
+          </div>
+
+          <div class="control-group">
+            <div class="control-header">
+              <span>1. Điện áp kích từ AVR Máy phát (Nút 1)</span>
+              <span class="control-val" id="qv-lbl-v1">1.00 p.u.</span>
+            </div>
+            <div class="control-meta">Điều chỉnh điện áp thanh cái đầu nguồn nhà máy điện</div>
+            <input type="range" id="qv-slider-v1" min="0.95" max="1.05" step="0.01" value="1.00" oninput="updateQV()" />
+            <div class="range-limits"><span>0.95 p.u.</span><span>1.00 p.u.</span><span>1.05 p.u.</span></div>
+          </div>
+
+          <div class="control-group">
+            <div class="control-header">
+              <span>2. Thiết bị Bù ngang tại Phụ tải (Nút 4)</span>
+              <span class="control-val" id="qv-lbl-qcomp">0 MVAr</span>
+            </div>
+            <div class="control-meta">Âm (-): Đóng Kháng bù thu Q | Dương (+): Đóng Tụ bù phát Q</div>
+            <input type="range" id="qv-slider-qcomp" min="-150" max="300" step="10" value="0" oninput="updateQV()" />
+            <div class="range-limits"><span>-150 MVAr (Kháng)</span><span>0</span><span>+300 MVAr (Tụ)</span></div>
+          </div>
+
+          <div class="control-group">
+            <div class="control-header">
+              <span>3. Nấc phân áp dưới tải MBA OLTC (Nút 2-3)</span>
+              <span class="control-val" id="qv-lbl-tap">1.00</span>
+            </div>
+            <div class="control-meta">Thay đổi tỷ số biến áp để chỉnh tinh điện áp thanh cái 220 kV Nút 3</div>
+            <input type="range" id="qv-slider-tap" min="0.92" max="1.08" step="0.01" value="1.00" oninput="updateQV()" />
+            <div class="range-limits"><span>0.92 (-8%)</span><span>1.00</span><span>1.08 (+8%)</span></div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn-secondary" onclick="resetQVControls()">Đặt lại Mặc định</button>
+            <button class="btn btn-primary" onclick="recordResult('Q-V')">Ghi nhận Kịch bản vào Báo cáo</button>
+          </div>
+        </div>
+
+        <!-- Khu vực Hiển thị Trực quan Q-V -->
+        <div class="panel viz-container">
+          <div class="panel-title">
+            <span>Sơ đồ Đơn tuyến Trục Truyền tải 4 Nút & Biểu đồ Biên độ Điện áp (p.u.)</span>
+            <span id="qv-scen-badge" style="font-size:0.8rem; color:var(--text-main);">Kịch bản 1</span>
+          </div>
+
+          <!-- Sơ đồ đơn tuyến 4 nút SVG -->
+          <div class="svg-box">
+            <svg viewBox="0 0 800 185" width="100%" height="185">
+              <!-- Đường dây 1-2 (500kV) -->
+              <line x1="110" y1="80" x2="290" y2="80" stroke="#38bdf8" stroke-width="4"/>
+              <text x="200" y="65" fill="#94a3b8" font-size="11" font-family="monospace" text-anchor="middle">ĐZ 500kV (X12)</text>
+              <text id="qv-svg-flow12" x="200" y="102" fill="#38bdf8" font-size="11" font-family="monospace" text-anchor="middle">Q12 = 360 MVAr</text>
+
+              <!-- Máy biến áp OLTC 2-3 -->
+              <circle cx="375" cy="80" r="18" fill="none" stroke="#f59e0b" stroke-width="3"/>
+              <circle cx="398" cy="80" r="18" fill="none" stroke="#f59e0b" stroke-width="3"/>
+              <line x1="290" y1="80" x2="357" y2="80" stroke="#38bdf8" stroke-width="3"/>
+              <line x1="416" y1="80" x2="475" y2="80" stroke="#38bdf8" stroke-width="3"/>
+              <text id="qv-svg-tap" x="386" y="50" fill="#f59e0b" font-size="11" font-weight="bold" font-family="monospace" text-anchor="middle">OLTC: 1.00</text>
+
+              <!-- Đường dây 3-4 (220kV) -->
+              <line x1="475" y1="80" x2="670" y2="80" stroke="#38bdf8" stroke-width="4"/>
+              <text x="572" y="65" fill="#94a3b8" font-size="11" font-family="monospace" text-anchor="middle">ĐZ 220kV (X34)</text>
+              <text id="qv-svg-flow34" x="572" y="102" fill="#38bdf8" font-size="11" font-family="monospace" text-anchor="middle">Q_net = 380 MVAr</text>
+
+              <!-- 4 Thanh cái Nút -->
+              <!-- Nút 1 -->
+              <line x1="110" y1="40" x2="110" y2="125" stroke="#f8fafc" stroke-width="6"/>
+              <text x="110" y="30" fill="#f8fafc" font-size="12" font-weight="bold" text-anchor="middle">NÚT 1 (AVR)</text>
+              <text id="qv-svg-v1" x="110" y="148" fill="#22c55e" font-size="13" font-weight="bold" font-family="monospace" text-anchor="middle">1.000 p.u.</text>
+
+              <!-- Nút 2 -->
+              <line x1="290" y1="40" x2="290" y2="125" stroke="#f8fafc" stroke-width="6"/>
+              <text x="290" y="30" fill="#f8fafc" font-size="12" font-weight="bold" text-anchor="middle">NÚT 2 (500kV)</text>
+              <text id="qv-svg-v2" x="290" y="148" fill="#22c55e" font-size="13" font-weight="bold" font-family="monospace" text-anchor="middle">0.962 p.u.</text>
+
+              <!-- Nút 3 -->
+              <line x1="475" y1="40" x2="475" y2="125" stroke="#f8fafc" stroke-width="6"/>
+              <text x="475" y="30" fill="#f8fafc" font-size="12" font-weight="bold" text-anchor="middle">NÚT 3 (220kV)</text>
+              <text id="qv-svg-v3" x="475" y="148" fill="#22c55e" font-size="13" font-weight="bold" font-family="monospace" text-anchor="middle">0.953 p.u.</text>
+
+              <!-- Nút 4 -->
+              <line x1="670" y1="40" x2="670" y2="125" stroke="#f8fafc" stroke-width="6"/>
+              <text x="670" y="30" fill="#f8fafc" font-size="12" font-weight="bold" text-anchor="middle">NÚT 4 (TẢI & BÙ)</text>
+              <text id="qv-svg-v4" x="670" y="148" fill="#ef4444" font-size="13" font-weight="bold" font-family="monospace" text-anchor="middle">0.918 p.u.</text>
+              <text id="qv-svg-comp" x="670" y="168" fill="#94a3b8" font-size="11" font-family="monospace" text-anchor="middle">Bù Q: 0 MVAr</text>
+            </svg>
+          </div>
+
+          <!-- Biểu đồ profin điện áp 4 nút -->
+          <div class="bar-chart-box">
+            <div style="font-size:0.86rem; font-weight:600; margin-bottom:12px; color:var(--text-muted);">
+              PROFIN ĐIỆN ÁP CÁC NÚT TRÊN LƯỚI (DẢI AN TOÀN: 0,950 p.u. ĐẾN 1,050 p.u. — VẠCH TRẮNG)
+            </div>
+
+            <div class="bar-row">
+              <div class="bar-label-line">
+                <span>Nút 1: Thanh cái Đầu cực Máy phát (AVR)</span>
+                <span id="qv-bar-txt-v1" style="font-family:var(--font-mono);">1.000 p.u.</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-limit-marker" style="left: 42.8%;" title="0.95 p.u."></div>
+                <div class="bar-limit-marker" style="left: 71.4%;" title="1.05 p.u."></div>
+                <div class="bar-fill" id="qv-bar-v1" style="width:57%; background:#22c55e;"></div>
+              </div>
+            </div>
+
+            <div class="bar-row">
+              <div class="bar-label-line">
+                <span>Nút 2: Cuối đường dây truyền tải 500 kV</span>
+                <span id="qv-bar-txt-v2" style="font-family:var(--font-mono);">0.962 p.u.</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-limit-marker" style="left: 42.8%;"></div>
+                <div class="bar-limit-marker" style="left: 71.4%;"></div>
+                <div class="bar-fill" id="qv-bar-v2" style="width:46%; background:#22c55e;"></div>
+              </div>
+            </div>
+
+            <div class="bar-row">
+              <div class="bar-label-line">
+                <span>Nút 3: Thanh cái 220 kV phía sau MBA OLTC</span>
+                <span id="qv-bar-txt-v3" style="font-family:var(--font-mono);">0.953 p.u.</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-limit-marker" style="left: 42.8%;"></div>
+                <div class="bar-limit-marker" style="left: 71.4%;"></div>
+                <div class="bar-fill" id="qv-bar-v3" style="width:43%; background:#22c55e;"></div>
+              </div>
+            </div>
+
+            <div class="bar-row">
+              <div class="bar-label-line">
+                <span>Nút 4: Thanh cái Trung tâm Phụ tải Công nghiệp</span>
+                <span id="qv-bar-txt-v4" style="font-family:var(--font-mono);">0.918 p.u.</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-limit-marker" style="left: 42.8%;"></div>
+                <div class="bar-limit-marker" style="left: 71.4%;"></div>
+                <div class="bar-fill" id="qv-bar-v4" style="width:33%; background:#f59e0b;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- TAB 3: KIỂM SOÁT QUÁ TẢI NHIỆT & TÁI ĐIỀU ĐỘ NGHẼN MẠCH (MVA/OPF) -->
+    <!-- ================================================================= -->
+    <section id="tab-mva" class="tab-content">
+      <div class="kpi-grid">
+        <div class="kpi-card" id="mva-card-l13">
+          <div class="kpi-label">Mang tải Đường dây 1–3</div>
+          <div class="kpi-value" id="mva-val-l13">113.8%</div>
+          <div class="kpi-sub" id="mva-sub-l13">569 MVA / Giới hạn 500 MVA</div>
+        </div>
+        <div class="kpi-card" id="mva-card-l23">
+          <div class="kpi-label">Mang tải Đường dây 2–3</div>
+          <div class="kpi-value" id="mva-val-l23">72.9%</div>
+          <div class="kpi-sub" id="mva-sub-l23">438 MVA / Giới hạn 600 MVA</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Nguồn Đỉnh Tại chỗ G3 (Nút 3)</div>
+          <div class="kpi-value" id="mva-val-pg3">40 MW</div>
+          <div class="kpi-sub">Tự động bù công suất giữ f = 50 Hz</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Tổng Chi phí Hệ thống (SCED)</div>
+          <div class="kpi-value" id="mva-val-cost">1310 Tr.đ/h</div>
+          <div class="kpi-sub" id="mva-sub-congcost">Chi phí nghẽn mạch: +110 Tr.đ/h</div>
+        </div>
+        <div class="kpi-card" id="mva-card-status">
+          <div class="kpi-label">Trạng thái Nhiệt Lưới Truyền tải</div>
+          <div class="kpi-value" id="mva-val-status" style="font-size: 1.15rem;">QUÁ TẢI NHIỆT</div>
+          <div class="kpi-sub" id="mva-sub-status">Cần tái điều độ (Redispatch) ngay!</div>
+        </div>
+      </div>
+
+      <div class="workspace-grid">
+        <!-- Bảng Điều khiển MVA / OPF -->
+        <div class="panel">
+          <div class="panel-title">
+            <span>Tái Điều độ Giải tỏa Nghẽn mạch (SCED)</span>
+            <span style="font-size:0.75rem; color:var(--text-muted);">Mạch vòng 3 Nút</span>
+          </div>
+
+          <div class="scenario-list">
+            <button class="scenario-btn active" id="mva-scen-1" onclick="loadMVAScenario(1)">
+              1. Cao điểm truyền tải (Bẫy Merit Order)
+              <div class="scenario-desc">P_tải = 1000 MW, Q_tải = 360 MVAr | ĐZ 1-3 giới hạn 500 MVA</div>
+            </button>
+            <button class="scenario-btn" id="mva-scen-2" onclick="loadMVAScenario(2)">
+              2. Sự cố N-1 (Nhảy 1 mạch Đường dây 1–3)
+              <div class="scenario-desc">P_tải = 950 MW | Giới hạn nhiệt ĐZ 1-3 giảm khẩn cấp còn 350 MVA</div>
+            </button>
+            <button class="scenario-btn" id="mva-scen-3" onclick="loadMVAScenario(3)">
+              3. Bùng nổ NLTT tại Nút 1 (Nghẽn mạch liên vùng)
+              <div class="scenario-desc">P_tải = 1100 MW, Q_tải = 380 MVAr | ĐZ 1-3 giới hạn 480 MVA</div>
+            </button>
+          </div>
+
+          <div class="control-group">
+            <div class="control-header">
+              <span>1. Nguồn Giá rẻ Nút 1 (PG1 - Than/NLTT)</span>
+              <span class="control-val" id="mva-lbl-pg1">660 MW</span>
+            </div>
+            <div class="control-meta">Chi phí rẻ: 1,10 triệu VNĐ/MWh | Hệ số PTDF lên ĐZ 1-3 = 2/3 (66,7%)</div>
+            <input type="range" id="mva-slider-pg1" min="0" max="800" step="10" value="660" oninput="updateMVA()" />
+            <div class="range-limits"><span>0 MW</span><span>800 MW</span></div>
+          </div>
+
+          <div class="control-group">
+            <div class="control-header">
+              <span>2. Nguồn Trung gian Nút 2 (PG2 - Thủy điện)</span>
+              <span class="control-val" id="mva-lbl-pg2">300 MW</span>
+            </div>
+            <div class="control-meta">Chi phí TB: 1,60 triệu VNĐ/MWh | Hệ số PTDF lên ĐZ 1-3 = 1/3 (33,3%)</div>
+            <input type="range" id="mva-slider-pg2" min="0" max="700" step="10" value="300" oninput="updateMVA()" />
+            <div class="range-limits"><span>0 MW</span><span>700 MW</span></div>
+          </div>
+
+          <div class="control-group">
+            <div class="control-header">
+              <span>3. Đóng Tụ bù tại Nút Phụ tải 3 (Q_bù)</span>
+              <span class="control-val" id="mva-lbl-qcomp">0 MVAr</span>
+            </div>
+            <div class="control-meta">Giảm dòng Q truyền tải để giải phóng dung lượng nhiệt MVA đường dây</div>
+            <input type="range" id="mva-slider-qcomp" min="0" max="300" step="10" value="0" oninput="updateMVA()" />
+            <div class="range-limits"><span>0 MVAr</span><span>300 MVAr</span></div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn-secondary" onclick="solveOptimalOPF()">Gợi ý Điểm Tối ưu OPF</button>
+            <button class="btn btn-primary" onclick="recordResult('MVA-OPF')">Ghi nhận Kịch bản vào Báo cáo</button>
+          </div>
+        </div>
+
+        <!-- Khu vực Hiển thị Trực quan MVA / PTDF -->
+        <div class="panel viz-container">
+          <div class="panel-title">
+            <span>Sơ đồ Trào lưu Mạch vòng 3 Nút (PTDF) & Mức Mang tải Nhiệt Đường dây (%)</span>
+            <span id="mva-scen-badge" style="font-size:0.8rem; color:var(--text-main);">Kịch bản 1</span>
+          </div>
+
+          <!-- Sơ đồ tam giác 3 nút SVG -->
+          <div class="svg-box">
+            <svg viewBox="0 0 800 225" width="100%" height="225">
+              <!-- Đường dây 1-2 -->
+              <line id="mva-svg-line12" x1="160" y1="55" x2="160" y2="175" stroke="#22c55e" stroke-width="5"/>
+              <rect x="45" y="98" width="210" height="26" rx="4" fill="#0f172a" stroke="#334155"/>
+              <text id="mva-svg-txt12" x="150" y="115" fill="#f8fafc" font-size="11" font-family="monospace" text-anchor="middle">ĐZ 1-2: 132 MVA (29.3%)</text>
+
+              <!-- Đường dây 1-3 -->
+              <line id="mva-svg-line13" x1="160" y1="55" x2="620" y2="115" stroke="#ef4444" stroke-width="6"/>
+              <rect x="305" y="45" width="235" height="28" rx="4" fill="#0f172a" stroke="#ef4444"/>
+              <text id="mva-svg-txt13" x="422" y="63" fill="#ef4444" font-size="12" font-weight="bold" font-family="monospace" text-anchor="middle">ĐZ 1-3: 569 MVA (113.8%)</text>
+
+              <!-- Đường dây 2-3 -->
+              <line id="mva-svg-line23" x1="160" y1="175" x2="620" y2="115" stroke="#22c55e" stroke-width="5"/>
+              <rect x="305" y="150" width="235" height="28" rx="4" fill="#0f172a" stroke="#334155"/>
+              <text id="mva-svg-txt23" x="422" y="168" fill="#22c55e" font-size="12" font-weight="bold" font-family="monospace" text-anchor="middle">ĐZ 2-3: 438 MVA (72.9%)</text>
+
+              <!-- Nút 1 -->
+              <circle cx="160" cy="55" r="22" fill="#1e293b" stroke="#38bdf8" stroke-width="3"/>
+              <text x="160" y="59" fill="#fff" font-size="12" font-weight="bold" text-anchor="middle">N1</text>
+              <text id="mva-svg-n1" x="160" y="22" fill="#38bdf8" font-size="12" font-weight="bold" font-family="monospace" text-anchor="middle">G1 (Rẻ): 660 MW</text>
+
+              <!-- Nút 2 -->
+              <circle cx="160" cy="175" r="22" fill="#1e293b" stroke="#38bdf8" stroke-width="3"/>
+              <text x="160" y="179" fill="#fff" font-size="12" font-weight="bold" text-anchor="middle">N2</text>
+              <text id="mva-svg-n2" x="160" y="212" fill="#38bdf8" font-size="12" font-weight="bold" font-family="monospace" text-anchor="middle">G2 (TB): 300 MW</text>
+
+              <!-- Nút 3 -->
+              <circle cx="620" cy="115" r="26" fill="#1e293b" stroke="#f59e0b" stroke-width="3"/>
+              <text x="620" y="119" fill="#fff" font-size="12" font-weight="bold" text-anchor="middle">N3</text>
+              <text id="mva-svg-n3-load" x="620" y="75" fill="#f59e0b" font-size="12" font-weight="bold" font-family="monospace" text-anchor="middle">Phụ tải: 1000 MW</text>
+              <text id="mva-svg-n3-gen" x="620" y="162" fill="#f8fafc" font-size="12" font-family="monospace" text-anchor="middle">G3 (Đắt): 40 MW</text>
+            </svg>
+          </div>
+
+          <!-- Biểu đồ cột phần trăm mang tải nhiệt -->
+          <div class="bar-chart-box">
+            <div style="font-size:0.86rem; font-weight:600; margin-bottom:12px; color:var(--text-muted);">
+              TỶ LỆ MANG TẢI NHIỆT ĐƯỜNG DÂY (% S_max — NGƯỠNG GIỚI HẠN NHIỆT 100% TẠI VẠCH TRẮNG)
+            </div>
+
+            <div class="bar-row">
+              <div class="bar-label-line">
+                <span>1. Đường dây trục chính 1–3 (PTDF: 2/3 PG1 + 1/3 PG2)</span>
+                <span id="mva-bar-txt-13" style="font-family:var(--font-mono); font-weight:700;">569.2 MVA (113.8%)</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-limit-marker" style="left: 71.4%;" title="100% S_max"></div>
+                <div class="bar-fill" id="mva-bar-13" style="width:81%; background:#ef4444;"></div>
+              </div>
+            </div>
+
+            <div class="bar-row">
+              <div class="bar-label-line">
+                <span>2. Đường dây song song 2–3 (PTDF: 1/3 PG1 + 2/3 PG2)</span>
+                <span id="mva-bar-txt-23" style="font-family:var(--font-mono);">437.5 MVA (72.9%)</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-limit-marker" style="left: 71.4%;" title="100% S_max"></div>
+                <div class="bar-fill" id="mva-bar-23" style="width:52%; background:#22c55e;"></div>
+              </div>
+            </div>
+
+            <div class="bar-row">
+              <div class="bar-label-line">
+                <span>3. Đường dây liên lạc 1–2 (PTDF: |1/3 PG1 - 1/3 PG2|)</span>
+                <span id="mva-bar-txt-12" style="font-family:var(--font-mono);">131.6 MVA (29.2%)</span>
+              </div>
+              <div class="bar-track">
+                <div class="bar-limit-marker" style="left: 71.4%;" title="100% S_max"></div>
+                <div class="bar-fill" id="mva-bar-12" style="width:21%; background:#22c55e;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- KHU VỰC BÁO CÁO THỰC HÀNH CỦA SINH VIÊN & NHẬT KÝ SCADA           -->
+    <!-- ================================================================= -->
+    <div class="bottom-grid">
+      <div class="panel">
+        <div class="panel-title">
+          <span>Bảng Kết quả Thực hành Đã Ghi nhận (Lab Report)</span>
+          <button class="btn btn-secondary" style="padding:4px 10px; font-size:0.75rem; flex:unset;" onclick="clearReportTable()">Xóa bảng</button>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th>Thời gian</th>
+                <th>Phân hệ & Kịch bản</th>
+                <th>Thông số Điều khiển</th>
+                <th>Chỉ số Đạt được</th>
+                <th>Đánh giá</th>
+              </tr>
+            </thead>
+            <tbody id="reportTableBody">
+              <tr>
+                <td colspan="5" style="text-align:center; color:var(--text-muted);">
+                  Chưa có bản ghi nào. Hãy điều chỉnh thông số và nhấn "Ghi nhận Kịch bản vào Báo cáo".
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">
+          <span>Nhật ký Sự kiện & Thao tác Điều độ (SCADA Event Log)</span>
+          <span style="font-size:0.75rem; color:var(--text-muted);">Thời gian thực</span>
+        </div>
+        <div class="log-console" id="scadaLogConsole"></div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    /* =====================================================================
+       QUẢN LÝ ĐỒNG HỒ, CHUYỂN TAB VÀ NHẬT KÝ SCADA
+       ===================================================================== */
+    const reportRecords = [];
+
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('scadaClock').textContent = now.toTimeString().split(' ')[0];
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    function addScadaLog(moduleName, message) {
+      const consoleEl = document.getElementById('scadaLogConsole');
+      const timeStr = new Date().toTimeString().split(' ')[0];
+      const div = document.createElement('div');
+      div.className = 'log-entry';
+      div.innerHTML = `<span class="log-time">[${timeStr}]</span><strong>[${moduleName}]</strong> ${message}`;
+      consoleEl.prepend(div);
+    }
+
+    function switchTab(tabId, btnEl) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      btnEl.classList.add('active');
+      addScadaLog('HỆ THỐNG', `Chuyển màn hình giám sát sang phân hệ ${tabId.toUpperCase()}.`);
+    }
+
+    /* =====================================================================
+       PHÂN HỆ 1: ĐIỀU ĐỘ CÔNG SUẤT TÁC DỤNG & TẦN SỐ (P - f)
+       ===================================================================== */
+    const pfScenarios = {
+      1: { name: 'Kịch bản 1: Cao điểm tối 19:00', load: 4200, resMax: 300, coalMax: 2200, coalInit: 1800, hydroInit: 1600, resInit: 100 },
+      2: { name: 'Kịch bản 2: Giờ trưa 12:00 (Đỉnh ĐMT)', load: 2800, resMax: 2000, coalMax: 2200, coalInit: 1400, hydroInit: 400, resInit: 100 },
+      3: { name: 'Kịch bản 3: Sự cố N-1 Nhảy tổ máy 600MW', load: 3800, resMax: 800, coalMax: 1400, coalInit: 1400, hydroInit: 1100, resInit: 100 }
+    };
+    let currentPFScenario = 1;
+    let currentPFState = {};
+
+    function loadPFScenario(id) {
+      currentPFScenario = id;
+      const sc = pfScenarios[id];
+      document.querySelectorAll('#tab-pf .scenario-btn').forEach((b, idx) => {
+        b.classList.toggle('active', idx + 1 === id);
+      });
+      document.getElementById('pf-scen-badge').textContent = sc.name;
+
+      const coalSlider = document.getElementById('pf-slider-coal');
+      coalSlider.max = sc.coalMax;
+      coalSlider.value = sc.coalInit;
+      document.getElementById('pf-max-coal-lbl').textContent = sc.coalMax + ' MW';
+
+      document.getElementById('pf-slider-hydro').value = sc.hydroInit;
+      document.getElementById('pf-slider-res').value = sc.resInit;
+
+      addScadaLog('P-f', `Nạp ${sc.name} (Phụ tải = ${sc.load} MW, Khả dụng NLTT = ${sc.resMax} MW).`);
+      updatePF();
+    }
+
+    function updatePF() {
+      const sc = pfScenarios[currentPFScenario];
+      const coalMW = parseFloat(document.getElementById('pf-slider-coal').value);
+      const hydroMW = parseFloat(document.getElementById('pf-slider-hydro').value);
+      const resPct = parseFloat(document.getElementById('pf-slider-res').value);
+
+      const resMW = Math.round(sc.resMax * (resPct / 100));
+      const totalGen = coalMW + hydroMW + resMW;
+      const deltaP = totalGen - sc.load;
+      const freq = 50.0 + (deltaP / 1000.0);
+      const reserveMW = 2500 - hydroMW;
+      const totalCost = (coalMW * 1.25) + (hydroMW * 1.85) + (resMW * 0.20);
+      const unitCost = totalGen > 0 ? Math.round((totalCost * 1000) / totalGen) : 0;
+
+      // Cập nhật nhãn thanh trượt
+      document.getElementById('pf-lbl-coal').textContent = `${coalMW} MW`;
+      document.getElementById('pf-lbl-hydro').textContent = `${hydroMW} MW`;
+      document.getElementById('pf-lbl-res').textContent = `${resPct}% (${resMW} MW)`;
+
+      // Cập nhật thẻ KPI
+      document.getElementById('pf-val-freq').textContent = `${freq.toFixed(2)} Hz`;
+      document.getElementById('pf-val-deltap').textContent = `${deltaP >= 0 ? '+' : ''}${deltaP} MW`;
+      document.getElementById('pf-sub-genload').textContent = `Phát: ${totalGen} MW | Tải: ${sc.load} MW`;
+      document.getElementById('pf-val-cost').textContent = `${totalCost.toFixed(0)} Tr.đ/h`;
+      document.getElementById('pf-sub-unitcost').textContent = `Đơn giá TB: ${unitCost.toLocaleString('vi-VN')} đ/kWh`;
+      document.getElementById('pf-val-reserve').textContent = `${reserveMW} MW`;
+
+      const freqCard = document.getElementById('pf-card-freq');
+      const statusCard = document.getElementById('pf-card-status');
+      const statusTxt = document.getElementById('pf-val-status');
+      const relayTxt = document.getElementById('pf-sub-relay');
+
+      freqCard.className = 'kpi-card';
+      statusCard.className = 'kpi-card';
+
+      let statusLabel = 'ỔN ĐỊNH AN TOÀN';
+      if (freq >= 49.80 && freq <= 50.20) {
+        freqCard.classList.add('status-ok');
+        statusCard.classList.add('status-ok');
+        statusTxt.textContent = 'ỔN ĐỊNH (BÌNH THƯỜNG)';
+        relayTxt.textContent = 'Hệ thống cân bằng trong dải ±0,2 Hz';
+      } else if ((freq >= 49.50 && freq < 49.80) || (freq > 50.20 && freq <= 50.50)) {
+        freqCard.classList.add('status-warn');
+        statusCard.classList.add('status-warn');
+        statusTxt.textContent = 'CẢNH BÁO ĐIỀU TẦN';
+        relayTxt.textContent = 'Cần điều chỉnh nguồn linh hoạt ngay!';
+        statusLabel = 'CẢNH BÁO';
+      } else {
+        freqCard.classList.add('status-danger');
+        statusCard.classList.add('status-danger');
+        if (freq < 49.00) {
+          statusTxt.textContent = 'SA THẢI PHỤ TẢI (UFLS)';
+          relayTxt.textContent = 'Tần số dưới 49,0 Hz: Rơ-le cắt tải khẩn cấp!';
+        } else if (freq < 49.50) {
+          statusTxt.textContent = 'KHẨN CẤP THIẾU NGUỒN';
+          relayTxt.textContent = 'Nguy cơ tác động rơ-le UFLS!';
+        } else {
+          statusTxt.textContent = 'KHẨN CẤP QUÁ TẦN SỐ';
+          relayTxt.textContent = 'Nguy cơ nhảy máy phát bảo vệ quá tốc!';
+        }
+        statusLabel = 'VI PHẠM KHẨN CẤP';
+      }
+
+      // Cập nhật kim đồng hồ SVG (dải 49.0 -> 51.0 ứng với x = 40 -> 760)
+      const clampedF = Math.max(49.0, Math.min(51.0, freq));
+      const needleX = 40 + ((clampedF - 49.0) / 2.0) * 720;
+      document.getElementById('pf-svg-needle').setAttribute('transform', `translate(${needleX}, 0)`);
+      document.getElementById('pf-svg-freq-txt').textContent = `${freq.toFixed(2)} Hz`;
+      document.getElementById('pf-svg-g1').textContent = `Than: ${coalMW} MW`;
+      document.getElementById('pf-svg-g2').textContent = `Thủy+Khí: ${hydroMW} MW`;
+      document.getElementById('pf-svg-g3').textContent = `NLTT: ${resMW} MW`;
+      document.getElementById('pf-svg-load').textContent = `Phụ tải: ${sc.load} MW`;
+
+      // Cập nhật biểu đồ cột (thang 5000 MW)
+      document.getElementById('pf-bar-txt-coal').textContent = `${coalMW} MW`;
+      document.getElementById('pf-bar-coal').style.width = `${(coalMW / 5000) * 100}%`;
+
+      document.getElementById('pf-bar-txt-hydro').textContent = `${hydroMW} MW`;
+      document.getElementById('pf-bar-hydro').style.width = `${(hydroMW / 5000) * 100}%`;
+
+      document.getElementById('pf-bar-txt-res').textContent = `${resMW} MW (${resPct}%)`;
+      document.getElementById('pf-bar-res').style.width = `${(resMW / 5000) * 100}%`;
+
+      document.getElementById('pf-bar-txt-total').textContent = `${totalGen} MW`;
+      document.getElementById('pf-bar-total').style.width = `${Math.min(100, (totalGen / 5000) * 100)}%`;
+
+      document.getElementById('pf-bar-txt-load').textContent = `${sc.load} MW`;
+      document.getElementById('pf-bar-load').style.width = `${(sc.load / 5000) * 100}%`;
+
+      currentPFState = {
+        scenario: sc.name,
+        controls: `Than=${coalMW}MW, Thủy/Khí=${hydroMW}MW, NLTT=${resPct}% (${resMW}MW)`,
+        metrics: `f=${freq.toFixed(2)}Hz, ΔP=${deltaP}MW, Chi phí=${totalCost.toFixed(0)} Tr.đ/h`,
+        status: statusLabel
+      };
+    }
+
+    function autoAGC_PF() {
+      const sc = pfScenarios[currentPFScenario];
+      const coalMW = parseFloat(document.getElementById('pf-slider-coal').value);
+      const resPct = parseFloat(document.getElementById('pf-slider-res').value);
+      const resMW = Math.round(sc.resMax * (resPct / 100));
+
+      let neededHydro = sc.load - coalMW - resMW;
+      neededHydro = Math.max(0, Math.min(2500, Math.round(neededHydro / 20) * 20));
+      document.getElementById('pf-slider-hydro').value = neededHydro;
+      updatePF();
+      addScadaLog('AGC (P-f)', `Tác động điều tần tự động AGC: Đặt nguồn linh hoạt = ${neededHydro} MW.`);
+    }
+
+    /* =====================================================================
+       PHÂN HỆ 2: ĐIỀU ĐỘ ĐIỆN ÁP & CÔNG SUẤT PHẢN KHÁNG (Q - V)
+       ===================================================================== */
+    const qvScenarios = {
+      1: { name: 'Kịch bản 1: Cao điểm chiều (Tải cảm lớn)', P_L: 600, Q_L: 380, Q_cap: 50, R12: 0.012, X12: 0.085, R34: 0.015, X34: 0.065 },
+      2: { name: 'Kịch bản 2: Thấp điểm đêm (Hiệu ứng Ferranti)', P_L: 120, Q_L: 30, Q_cap: 280, R12: 0.012, X12: 0.085, R34: 0.015, X34: 0.065 },
+      3: { name: 'Kịch bản 3: Sự cố N-1 Đường dây 500 kV', P_L: 520, Q_L: 320, Q_cap: 25, R12: 0.024, X12: 0.170, R34: 0.015, X34: 0.065 }
+    };
+    let currentQVScenario = 1;
+    let currentQVState = {};
+
+    function loadQVScenario(id) {
+      currentQVScenario = id;
+      const sc = qvScenarios[id];
+      document.querySelectorAll('#tab-qv .scenario-btn').forEach((b, idx) => {
+        b.classList.toggle('active', idx + 1 === id);
+      });
+      document.getElementById('qv-scen-badge').textContent = sc.name;
+      resetQVControls();
+      addScadaLog('Q-V', `Nạp ${sc.name} (P_tải = ${sc.P_L} MW, Q_tải = ${sc.Q_L} MVAr).`);
+    }
+
+    function resetQVControls() {
+      document.getElementById('qv-slider-v1').value = 1.00;
+      document.getElementById('qv-slider-qcomp').value = 0;
+      document.getElementById('qv-slider-tap').value = 1.00;
+      updateQV();
+    }
+
+    function colorForVoltage(v) {
+      if (v >= 0.95 && v <= 1.05) return '#22c55e';
+      if ((v >= 0.90 && v < 0.95) || (v > 1.05 && v <= 1.10)) return '#f59e0b';
+      return '#ef4444';
+    }
+
+    function updateQV() {
+      const sc = qvScenarios[currentQVScenario];
+      const v1 = parseFloat(document.getElementById('qv-slider-v1').value);
+      const qComp = parseFloat(document.getElementById('qv-slider-qcomp').value);
+      const tap = parseFloat(document.getElementById('qv-slider-tap').value);
+
+      const qNet4 = sc.Q_L - qComp;
+      const qFlow12 = qNet4 - sc.Q_cap + 30;
+
+      const v2 = v1 - ((sc.P_L * sc.R12 + qFlow12 * sc.X12) / 1000.0);
+      const v3 = (v2 * tap) - ((qNet4 * 0.025) / 1000.0);
+      const v4 = v3 - ((sc.P_L * sc.R34 + qNet4 * sc.X34) / (1000.0 * Math.max(0.8, v3)));
+
+      const pLoss = (((sc.P_L * sc.P_L + qFlow12 * qFlow12) * sc.R12) + ((sc.P_L * sc.P_L + qNet4 * qNet4) * sc.R34)) / (1000.0 * v2 * v2);
+      const cosPhi = sc.P_L / Math.sqrt(sc.P_L * sc.P_L + qNet4 * qNet4);
+
+      // Cập nhật nhãn thanh trượt
+      document.getElementById('qv-lbl-v1').textContent = `${v1.toFixed(2)} p.u.`;
+      document.getElementById('qv-lbl-qcomp').textContent = `${qComp >= 0 ? '+' : ''}${qComp} MVAr`;
+      document.getElementById('qv-lbl-tap').textContent = `${tap.toFixed(2)}`;
+
+      // Cập nhật KPI
+      document.getElementById('qv-val-v4').textContent = `${v4.toFixed(3)} p.u.`;
+      document.getElementById('qv-val-pf').textContent = cosPhi.toFixed(3);
+      document.getElementById('qv-sub-qnet').textContent = `Q nhận tại Nút 4: ${qNet4} MVAr`;
+      document.getElementById('qv-val-loss').textContent = `${pLoss.toFixed(2)} MW`;
+      document.getElementById('qv-val-q12').textContent = `${qFlow12} MVAr`;
+
+      const v4Card = document.getElementById('qv-card-v4');
+      const statusCard = document.getElementById('qv-card-status');
+      const statusVal = document.getElementById('qv-val-status');
+      const statusSub = document.getElementById('qv-sub-status');
+      v4Card.className = 'kpi-card';
+      statusCard.className = 'kpi-card';
+
+      const voltages = [v1, v2, v3, v4];
+      const allNormal = voltages.every(v => v >= 0.95 && v <= 1.05);
+      const anyEmergency = voltages.some(v => v < 0.90 || v > 1.10);
+
+      let statusLabel = 'ỔN ĐỊNH AN TOÀN';
+      if (allNormal) {
+        v4Card.classList.add('status-ok');
+        statusCard.classList.add('status-ok');
+        statusVal.textContent = 'ĐIỆN ÁP AN TOÀN';
+        statusSub.textContent = 'Tất cả 4 nút đạt chuẩn 0,95 – 1,05 p.u.';
+      } else if (anyEmergency) {
+        v4Card.classList.add('status-danger');
+        statusCard.classList.add('status-danger');
+        statusVal.textContent = v4 < 0.90 ? 'NGUY CƠ SỤP ĐỔ ÁP' : 'QUÁ ÁP KHẨN CẤP';
+        statusSub.textContent = 'Vi phạm giới hạn ±10%! Cần bù Q khẩn cấp!';
+        statusLabel = 'VI PHẠM KHẨN CẤP';
+      } else {
+        v4Card.classList.add('status-warn');
+        statusCard.classList.add('status-warn');
+        statusVal.textContent = 'CẢNH BÁO ĐIỆN ÁP';
+        statusSub.textContent = 'Có nút nằm ngoài dải ±5% (0,95 – 1,05 p.u.)';
+        statusLabel = 'CẢNH BÁO';
+      }
+
+      // Cập nhật sơ đồ SVG 4 nút
+      document.getElementById('qv-svg-flow12').textContent = `Q12 = ${qFlow12} MVAr`;
+      document.getElementById('qv-svg-tap').textContent = `OLTC: ${tap.toFixed(2)}`;
+      document.getElementById('qv-svg-flow34').textContent = `Q_net = ${qNet4} MVAr`;
+      document.getElementById('qv-svg-comp').textContent = `Bù Q: ${qComp >= 0 ? '+' : ''}${qComp} MVAr`;
+
+      const nodes = [
+        { idx: 1, val: v1 },
+        { idx: 2, val: v2 },
+        { idx: 3, val: v3 },
+        { idx: 4, val: v4 }
+      ];
+
+      nodes.forEach(n => {
+        const col = colorForVoltage(n.val);
+        const svgTxt = document.getElementById(`qv-svg-v${n.idx}`);
+        svgTxt.textContent = `${n.val.toFixed(3)} p.u.`;
+        svgTxt.setAttribute('fill', col);
+
+        document.getElementById(`qv-bar-txt-v${n.idx}`).textContent = `${n.val.toFixed(3)} p.u.`;
+        const barEl = document.getElementById(`qv-bar-v${n.idx}`);
+        // Thang hiển thị từ 0.80 đến 1.15 p.u. (bề rộng 0.35 p.u.)
+        const pct = Math.max(5, Math.min(100, ((n.val - 0.80) / 0.35) * 100));
+        barEl.style.width = `${pct}%`;
+        barEl.style.backgroundColor = col;
+      });
+
+      currentQVState = {
+        scenario: sc.name,
+        controls: `AVR=${v1.toFixed(2)}pu, Q_bù=${qComp}MVAr, OLTC=${tap.toFixed(2)}`,
+        metrics: `V4=${v4.toFixed(3)}pu, cosφ=${cosPhi.toFixed(3)}, ΔP_tổn_thất=${pLoss.toFixed(2)}MW`,
+        status: statusLabel
+      };
+    }
+
+    /* =====================================================================
+       PHÂN HỆ 3: KIỂM SOÁT QUÁ TẢI NHIỆT & NGHẼN MẠCH TRUYỀN TẢI (MVA/OPF)
+       ===================================================================== */
+    const mvaScenarios = {
+      1: { name: 'Kịch bản 1: Cao điểm truyền tải (Bẫy Merit Order)', pLoad: 1000, qLoad: 360, s13Max: 500, s23Max: 600, s12Max: 450, pg1Init: 660, pg2Init: 300, qInit: 0 },
+      2: { name: 'Kịch bản 2: Sự cố N-1 Nhảy 1 mạch ĐZ 1-3', pLoad: 950, qLoad: 340, s13Max: 350, s23Max: 600, s12Max: 450, pg1Init: 550, pg2Init: 300, qInit: 0 },
+      3: { name: 'Kịch bản 3: Bùng nổ NLTT Nút 1 (Nghẽn mạch)', pLoad: 1100, qLoad: 380, s13Max: 480, s23Max: 550, s12Max: 400, pg1Init: 720, pg2Init: 320, qInit: 0 }
+    };
+    let currentMVAScenario = 1;
+    let currentMVAState = {};
+
+    function loadMVAScenario(id) {
+      currentMVAScenario = id;
+      const sc = mvaScenarios[id];
+      document.querySelectorAll('#tab-mva .scenario-btn').forEach((b, idx) => {
+        b.classList.toggle('active', idx + 1 === id);
+      });
+      document.getElementById('mva-scen-badge').textContent = sc.name;
+
+      document.getElementById('mva-slider-pg1').value = sc.pg1Init;
+      document.getElementById('mva-slider-pg2').value = sc.pg2Init;
+      document.getElementById('mva-slider-qcomp').value = sc.qInit;
+
+      addScadaLog('MVA/OPF', `Nạp ${sc.name} (S13_max = ${sc.s13Max} MVA, Phụ tải = ${sc.pLoad} MW).`);
+      updateMVA();
+    }
+
+    function colorForLoading(pct) {
+      if (pct <= 85.0) return '#22c55e';
+      if (pct <= 100.0) return '#f59e0b';
+      return '#ef4444';
+    }
+
+    function updateMVA() {
+      const sc = mvaScenarios[currentMVAScenario];
+      const pg1 = parseFloat(document.getElementById('mva-slider-pg1').value);
+      const pg2 = parseFloat(document.getElementById('mva-slider-pg2').value);
+      const qComp = parseFloat(document.getElementById('mva-slider-qcomp').value);
+
+      const pg3 = Math.max(0, sc.pLoad - pg1 - pg2);
+      const overGen = Math.max(0, (pg1 + pg2) - sc.pLoad);
+      const qNet = sc.qLoad - qComp;
+
+      // Ma trận PTDF mạch vòng tam giác đối xứng
+      const p13 = (2.0 / 3.0) * pg1 + (1.0 / 3.0) * pg2;
+      const p23 = (1.0 / 3.0) * pg1 + (2.0 / 3.0) * pg2;
+      const p12 = Math.abs((1.0 / 3.0) * pg1 - (1.0 / 3.0) * pg2);
+
+      const q13 = 0.50 * qNet;
+      const q23 = 0.35 * qNet;
+      const q12 = 0.15 * qNet;
+
+      const s13 = Math.sqrt(p13 * p13 + q13 * q13);
+      const s23 = Math.sqrt(p23 * p23 + q23 * q23);
+      const s12 = Math.sqrt(p12 * p12 + q12 * q12);
+
+      const pct13 = (s13 / sc.s13Max) * 100.0;
+      const pct23 = (s23 / sc.s23Max) * 100.0;
+      const pct12 = (s12 / sc.s12Max) * 100.0;
+
+      const totalCost = (pg1 * 1.10) + (pg2 * 1.60) + (pg3 * 2.60);
+      // Chi phí lý thuyết khi không nghẽn mạch (huy động tối đa G1 = 800 MW, phần còn lại G2)
+      const idealG1 = Math.min(800, sc.pLoad);
+      const idealG2 = Math.max(0, sc.pLoad - idealG1);
+      const unconstrainedCost = (idealG1 * 1.10) + (idealG2 * 1.60);
+      const congestionCost = Math.max(0, totalCost - unconstrainedCost);
+
+      // Cập nhật nhãn thanh trượt
+      document.getElementById('mva-lbl-pg1').textContent = `${pg1} MW`;
+      document.getElementById('mva-lbl-pg2').textContent = `${pg2} MW`;
+      document.getElementById('mva-lbl-qcomp').textContent = `${qComp} MVAr`;
+
+      // Cập nhật KPI
+      document.getElementById('mva-val-l13').textContent = `${pct13.toFixed(1)}%`;
+      document.getElementById('mva-sub-l13').textContent = `${s13.toFixed(0)} MVA / Giới hạn ${sc.s13Max} MVA`;
+
+      document.getElementById('mva-val-l23').textContent = `${pct23.toFixed(1)}%`;
+      document.getElementById('mva-sub-l23').textContent = `${s23.toFixed(0)} MVA / Giới hạn ${sc.s23Max} MVA`;
+
+      document.getElementById('mva-val-pg3').textContent = overGen > 0 ? `Dư +${overGen} MW` : `${pg3} MW`;
+      document.getElementById('mva-val-cost').textContent = `${totalCost.toFixed(0)} Tr.đ/h`;
+      document.getElementById('mva-sub-congcost').textContent = `Chi phí nghẽn mạch: +${congestionCost.toFixed(0)} Tr.đ/h`;
+
+      const c13 = document.getElementById('mva-card-l13');
+      const c23 = document.getElementById('mva-card-l23');
+      const cStatus = document.getElementById('mva-card-status');
+      c13.className = 'kpi-card ' + (pct13 > 100 ? 'status-danger' : pct13 > 85 ? 'status-warn' : 'status-ok');
+      c23.className = 'kpi-card ' + (pct23 > 100 ? 'status-danger' : pct23 > 85 ? 'status-warn' : 'status-ok');
+      cStatus.className = 'kpi-card';
+
+      const maxPct = Math.max(pct13, pct23, pct12);
+      let statusLabel = 'AN TOÀN NHIỆT';
+      if (overGen > 0) {
+        cStatus.classList.add('status-danger');
+        document.getElementById('mva-val-status').textContent = 'THỪA CÔNG SUẤT PHÁT';
+        document.getElementById('mva-sub-status').textContent = 'PG1 + PG2 vượt phụ tải! Hãy giảm nguồn!';
+        statusLabel = 'THỪA NGUỒN';
+      } else if (maxPct > 100.0) {
+        cStatus.classList.add('status-danger');
+        document.getElementById('mva-val-status').textContent = 'QUÁ TẢI NHIỆT (>100%)';
+        document.getElementById('mva-sub-status').textContent = 'Nguy cơ võng dây & nhảy đường dây!';
+        statusLabel = 'QUÁ TẢI NHIỆT';
+      } else if (maxPct > 85.0) {
+        cStatus.classList.add('status-warn');
+        document.getElementById('mva-val-status').textContent = 'VẬN HÀNH TẢI CAO';
+        document.getElementById('mva-sub-status').textContent = 'Tất cả đường dây dưới 100% (Đạt yêu cầu)';
+        statusLabel = 'ĐẠT (TẢI CAO)';
+      } else {
+        cStatus.classList.add('status-ok');
+        document.getElementById('mva-val-status').textContent = 'AN TOÀN NHIỆT (<85%)';
+        document.getElementById('mva-sub-status').textContent = 'Lưới truyền tải thông thoáng, tối ưu';
+      }
+
+      // Cập nhật sơ đồ SVG tam giác 3 nút
+      document.getElementById('mva-svg-n1').textContent = `G1 (Rẻ): ${pg1} MW`;
+      document.getElementById('mva-svg-n2').textContent = `G2 (TB): ${pg2} MW`;
+      document.getElementById('mva-svg-n3-load').textContent = `Phụ tải: ${sc.pLoad} MW`;
+      document.getElementById('mva-svg-n3-gen').textContent = `G3 (Đắt): ${pg3} MW`;
+
+      const lines = [
+        { id: '13', s: s13, pct: pct13 },
+        { id: '23', s: s23, pct: pct23 },
+        { id: '12', s: s12, pct: pct12 }
+      ];
+
+      lines.forEach(l => {
+        const col = colorForLoading(l.pct);
+        document.getElementById(`mva-svg-line${l.id}`).setAttribute('stroke', col);
+        const svgTxt = document.getElementById(`mva-svg-txt${l.id}`);
+        svgTxt.textContent = `ĐZ ${l.id[0]}-${l.id[1]}: ${l.s.toFixed(0)} MVA (${l.pct.toFixed(1)}%)`;
+        svgTxt.setAttribute('fill', col);
+
+        document.getElementById(`mva-bar-txt-${l.id}`).textContent = `${l.s.toFixed(1)} MVA (${l.pct.toFixed(1)}%)`;
+        const barEl = document.getElementById(`mva-bar-${l.id}`);
+        // Thang 140% ứng với 100% chiều rộng thanh
+        barEl.style.width = `${Math.min(100, (l.pct / 140.0) * 100)}%`;
+        barEl.style.backgroundColor = col;
+      });
+
+      currentMVAState = {
+        scenario: sc.name,
+        controls: `PG1=${pg1}MW, PG2=${pg2}MW, PG3=${pg3}MW, Q_bù=${qComp}MVAr`,
+        metrics: `ĐZ1-3=${pct13.toFixed(1)}%, ĐZ2-3=${pct23.toFixed(1)}%, Chi phí=${totalCost.toFixed(0)} Tr.đ/h`,
+        status: statusLabel
+      };
+    }
+
+    function solveOptimalOPF() {
+      const sc = mvaScenarios[currentMVAScenario];
+      // Đóng tối đa tụ bù 300 MVAr và tìm tổ hợp (PG1, PG2) rẻ nhất không vượt 99.5% giới hạn nhiệt
+      const bestQ = 300;
+      const qNet = sc.qLoad - bestQ;
+      let bestCost = Infinity;
+      let bestPG1 = 0;
+      let bestPG2 = 0;
+
+      for (let g1 = 0; g1 <= 800; g1 += 10) {
+        for (let g2 = 0; g2 <= 700; g2 += 10) {
+          if (g1 + g2 > sc.pLoad) continue;
+          const g3 = sc.pLoad - g1 - g2;
+          const p13 = (2 / 3) * g1 + (1 / 3) * g2;
+          const p23 = (1 / 3) * g1 + (2 / 3) * g2;
+          const p12 = Math.abs((1 / 3) * g1 - (1 / 3) * g2);
+
+          const s13 = Math.sqrt(p13 * p13 + Math.pow(0.50 * qNet, 2));
+          const s23 = Math.sqrt(p23 * p23 + Math.pow(0.35 * qNet, 2));
+          const s12 = Math.sqrt(p12 * p12 + Math.pow(0.15 * qNet, 2));
+
+          if (s13 <= sc.s13Max * 0.995 && s23 <= sc.s23Max * 0.995 && s12 <= sc.s12Max * 0.995) {
+            const cost = g1 * 1.10 + g2 * 1.60 + g3 * 2.60;
+            if (cost < bestCost) {
+              bestCost = cost;
+              bestPG1 = g1;
+              bestPG2 = g2;
+            }
+          }
+        }
+      }
+
+      document.getElementById('mva-slider-qcomp').value = bestQ;
+      document.getElementById('mva-slider-pg1').value = bestPG1;
+      document.getElementById('mva-slider-pg2').value = bestPG2;
+      updateMVA();
+      addScadaLog('OPF Solver', `Đã giải bài toán SCED/OPF: PG1=${bestPG1}MW, PG2=${bestPG2}MW, Q_bù=${bestQ}MVAr (Chi phí tối ưu = ${bestCost.toFixed(0)} Tr.đ/h).`);
+    }
+
+    /* =====================================================================
+       GHI NHẬN KẾT QUẢ THỰC HÀNH & XUẤT BÁO CÁO CSV CHO SINH VIÊN
+       ===================================================================== */
+    function recordResult(moduleCode) {
+      let stateObj = null;
+      if (moduleCode === 'P-f') stateObj = currentPFState;
+      if (moduleCode === 'Q-V') stateObj = currentQVState;
+      if (moduleCode === 'MVA-OPF') stateObj = currentMVAState;
+
+      const timeStr = new Date().toTimeString().split(' ')[0];
+      const rec = {
+        time: timeStr,
+        module: `${moduleCode} | ${stateObj.scenario}`,
+        controls: stateObj.controls,
+        metrics: stateObj.metrics,
+        status: stateObj.status
+      };
+      reportRecords.push(rec);
+      renderReportTable();
+      addScadaLog('BÁO CÁO', `Đã lưu kết quả thực hành phân hệ [${moduleCode}] vào bảng báo cáo.`);
+    }
+
+    function renderReportTable() {
+      const tbody = document.getElementById('reportTableBody');
+      if (reportRecords.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Chưa có bản ghi nào.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = reportRecords.map(r => `
+        <tr>
+          <td>${r.time}</td>
+          <td>${r.module}</td>
+          <td>${r.controls}</td>
+          <td>${r.metrics}</td>
+          <td><strong>${r.status}</strong></td>
+        </tr>
+      `).join('');
+    }
+
+    function clearReportTable() {
+      reportRecords.length = 0;
+      renderReportTable();
+      addScadaLog('BÁO CÁO', 'Đã xóa dữ liệu bảng báo cáo thực hành.');
+    }
+
+    function exportCSVReport() {
+      const name = document.getElementById('studentName').value.trim() || 'Chua_nhap_ten';
+      const mssv = document.getElementById('studentId').value.trim() || 'Chua_nhap_MSSV';
+
+      if (reportRecords.length === 0) {
+        alert('Bạn chưa ghi nhận kịch bản nào vào bảng báo cáo! Hãy nhấn nút "Ghi nhận Kịch bản vào Báo cáo" ở từng phân hệ trước khi xuất file.');
+        return;
+      }
+
+      let csvContent = '\uFEFF'; // BOM cho tiếng Việt trên Excel
+      csvContent += `BAO CAO THUC HANH DIEU DO HE THONG DIEN\n`;
+      csvContent += `Ho va ten sinh vien:,${name},MSSV / Lop:,${mssv}\n\n`;
+      csvContent += `Thoi gian,Phan he & Kich ban,Thong so Dieu khien,Chi so Dat duoc,Danh gia An ninh\n`;
+
+      reportRecords.forEach(r => {
+        csvContent += `"${r.time}","${r.module}","${r.controls}","${r.metrics}","${r.status}"\n`;
+      });
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Bao_cao_Dieu_do_${mssv}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      addScadaLog('XUẤT FILE', `Đã xuất tệp báo cáo thực hành cho sinh viên: ${name} (${mssv}).`);
+    }
+
+    // Khởi tạo toàn bộ 3 phân hệ khi mở trang
+    window.onload = function() {
+      loadPFScenario(1);
+      loadQVScenario(1);
+      loadMVAScenario(1);
+      addScadaLog('EMS CORE', 'Hệ thống mô phỏng Điều độ Quốc gia đã sẵn sàng vận hành.');
+    };
+  </script>
+</body>
+</html>
