@@ -521,6 +521,136 @@
       color: var(--accent);
       margin-right: 6px;
     }
+
+    /* ===== BỔ SUNG: HƯỚNG DẪN, NỘP BÀI, BẢNG ĐIỂM ===== */
+    .btn-sm { padding: 4px 10px; font-size: 0.75rem; flex: unset; }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .btn-danger-ghost { background: transparent; color: var(--danger); border-color: rgba(239,68,68,0.5); }
+    .btn-danger-ghost:hover { background: var(--danger-bg); }
+
+    .tab-btn.tab-guide.active { color: var(--warn); border-top-color: var(--warn); }
+    .tab-btn.tab-board.active { color: var(--ok); border-top-color: var(--ok); }
+
+    .notice-bar {
+      background: rgba(56,189,248,0.10);
+      border: 1px solid rgba(56,189,248,0.4);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .guide-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 1024px) { .guide-grid { grid-template-columns: 1fr; } }
+    .guide-panel h3 { font-size: 0.98rem; color: var(--accent); margin: 4px 0 10px; }
+    .guide-panel h4 { font-size: 0.88rem; color: var(--text-main); margin: 14px 0 6px; }
+    .guide-panel p, .guide-panel li { font-size: 0.86rem; color: #cbd5e1; }
+    .guide-panel ol, .guide-panel ul { padding-left: 20px; display: flex; flex-direction: column; gap: 5px; }
+    .guide-panel b { color: var(--text-main); }
+    .guide-panel code {
+      font-family: var(--font-mono); font-size: 0.8rem; background: var(--bg-input);
+      border: 1px solid var(--border); padding: 1px 5px; border-radius: 4px; color: var(--accent);
+    }
+    .step-list { list-style: none; padding-left: 0 !important; counter-reset: step; }
+    .step-list > li {
+      counter-increment: step; position: relative; padding: 10px 12px 10px 48px;
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;
+    }
+    .step-list > li::before {
+      content: counter(step); position: absolute; left: 12px; top: 10px; width: 24px; height: 24px;
+      border-radius: 50%; background: var(--accent); color: #0f172a; font-weight: 700;
+      font-size: 0.8rem; display: flex; align-items: center; justify-content: center;
+    }
+    .tip {
+      border-left: 3px solid var(--warn); background: var(--warn-bg); padding: 8px 12px;
+      border-radius: 0 6px 6px 0; font-size: 0.82rem; margin-top: 8px; color: #fde68a;
+    }
+
+    .progress-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+    @media (max-width: 700px) { .progress-grid { grid-template-columns: 1fr; } }
+    .progress-col { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 10px; }
+    .progress-col-title { font-size: 0.8rem; font-weight: 700; color: var(--accent); margin-bottom: 8px; display: flex; justify-content: space-between; }
+    .scen-chip {
+      display: flex; justify-content: space-between; align-items: center; gap: 8px;
+      font-size: 0.78rem; padding: 6px 8px; border-radius: 6px; margin-bottom: 6px;
+      background: var(--bg-input); border: 1px solid var(--border); cursor: pointer;
+    }
+    .scen-chip:last-child { margin-bottom: 0; }
+    .scen-chip .pts { font-family: var(--font-mono); font-weight: 700; white-space: nowrap; }
+    .scen-chip.todo .pts { color: var(--text-muted); }
+    .scen-chip.low { border-color: rgba(239,68,68,0.6); }
+    .scen-chip.low .pts { color: var(--danger); }
+    .scen-chip.mid { border-color: rgba(245,158,11,0.6); }
+    .scen-chip.mid .pts { color: var(--warn); }
+    .scen-chip.full { border-color: rgba(34,197,94,0.6); }
+    .scen-chip.full .pts { color: var(--ok); }
+
+    .submit-row { display: grid; grid-template-columns: 1fr 300px; gap: 16px; }
+    @media (max-width: 900px) { .submit-row { grid-template-columns: 1fr; } }
+    textarea.conclusion {
+      width: 100%; min-height: 150px; resize: vertical; background: var(--bg-input);
+      color: var(--text-main); border: 1px solid var(--border); border-radius: 8px;
+      padding: 10px 12px; font-family: var(--font-sans); font-size: 0.86rem; line-height: 1.5;
+    }
+    textarea.conclusion:focus, .note-input:focus, .board-tools input:focus, .board-tools select:focus { outline: none; border-color: var(--accent); }
+    .score-box {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;
+      padding: 14px; display: flex; flex-direction: column; gap: 8px;
+    }
+    .score-big { font-family: var(--font-mono); font-size: 2.2rem; font-weight: 700; color: var(--accent); line-height: 1.1; }
+    .score-line { display: flex; justify-content: space-between; font-size: 0.82rem; color: var(--text-muted); }
+    .score-line span:last-child { font-family: var(--font-mono); color: var(--text-main); }
+    .server-status { font-size: 0.78rem; color: var(--text-muted); text-transform: none; letter-spacing: 0; font-weight: 500; }
+    .guide-panel table.report-table td { font-family: var(--font-sans); }
+
+    .note-input {
+      width: 100%; min-width: 140px; background: var(--bg-input); color: var(--text-main);
+      border: 1px solid var(--border); border-radius: 4px; padding: 4px 6px; font-size: 0.78rem;
+      font-family: var(--font-sans);
+    }
+    .score-pill {
+      display: inline-block; font-family: var(--font-mono); font-weight: 700; padding: 2px 8px;
+      border-radius: 10px; font-size: 0.78rem; white-space: nowrap;
+    }
+    .pill-full { background: var(--ok-bg); color: var(--ok); }
+    .pill-mid { background: var(--warn-bg); color: var(--warn); }
+    .pill-low { background: var(--danger-bg); color: var(--danger); }
+
+    .board-tools { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; align-items: center; }
+    .board-tools input, .board-tools select {
+      background: var(--bg-input); border: 1px solid var(--border); color: var(--text-main);
+      padding: 7px 10px; border-radius: 6px; font-size: 0.85rem;
+    }
+    table.report-table td.num, table.report-table th.num { text-align: right; }
+    table.report-table tr.me td { background: rgba(56,189,248,0.10); }
+    .rank-medal { font-weight: 700; }
+
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(2,6,23,0.75); z-index: 200;
+      display: none; align-items: flex-start; justify-content: center; padding: 40px 16px; overflow-y: auto;
+    }
+    .modal-backdrop.show { display: flex; }
+    .modal {
+      background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px;
+      width: 100%; max-width: 720px; padding: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    }
+    .modal h2 { font-size: 1.05rem; color: var(--accent); margin-bottom: 12px; }
+    .modal .breakdown { font-size: 0.82rem; }
+    .modal .breakdown td { font-family: var(--font-sans); }
+    .modal .btn-row { justify-content: flex-end; }
+    .modal .btn-row .btn { flex: unset; min-width: 120px; }
+
+    @media (max-width: 700px) {
+      .scada-header { padding: 12px 16px; }
+      .container { padding: 16px; }
+      .nav-tabs { padding: 12px 16px 0; }
+      .student-bar input { flex: 1 1 140px; }
+    }
   </style>
 </head>
 <body>
@@ -536,30 +666,125 @@
     </div>
 
     <div class="student-bar">
-      <input type="text" id="studentName" placeholder="Họ và tên sinh viên..." />
-      <input type="text" id="studentId" placeholder="MSSV / Lớp..." style="width: 140px;" />
-      <button class="btn btn-success" onclick="exportCSVReport()" style="flex: unset;">Xuất Báo cáo (.CSV)</button>
+      <input type="text" id="studentName" placeholder="Họ và tên sinh viên..." oninput="saveDraft()" />
+      <input type="text" id="studentId" placeholder="MSSV..." style="width: 120px;" oninput="saveDraft()" />
+      <input type="text" id="studentClass" placeholder="Lớp..." style="width: 110px;" oninput="saveDraft()" />
+      <button class="btn btn-secondary" onclick="exportCSVReport()" style="flex: unset;">Xuất Báo cáo (.CSV)</button>
+      <button class="btn btn-success" onclick="openSubmitPanel()" style="flex: unset;">Nộp bài</button>
       <div class="clock-box" id="scadaClock">00:00:00</div>
     </div>
   </header>
 
   <!-- NAVIGATION TABS -->
   <nav class="nav-tabs">
-    <button class="tab-btn active" onclick="switchTab('tab-pf', this)">
+    <button class="tab-btn tab-guide" id="tabbtn-guide" onclick="switchTab('tab-guide', this)">
+      <span>HƯỚNG DẪN THỰC HÀNH</span>
+      <span class="tab-badge" style="background:var(--warn-bg); color:var(--warn);">Đọc trước</span>
+    </button>
+    <button class="tab-btn active" id="tabbtn-pf" onclick="switchTab('tab-pf', this)">
       <span>PHÂN HỆ 1: ĐIỀU ĐỘ TẦN SỐ</span>
       <span class="tab-badge">P - f</span>
     </button>
-    <button class="tab-btn" onclick="switchTab('tab-qv', this)">
+    <button class="tab-btn" id="tabbtn-qv" onclick="switchTab('tab-qv', this)">
       <span>PHÂN HỆ 2: ĐIỀU ĐỘ ĐIỆN ÁP & PHẢN KHÁNG</span>
       <span class="tab-badge">Q - V</span>
     </button>
-    <button class="tab-btn" onclick="switchTab('tab-mva', this)">
+    <button class="tab-btn" id="tabbtn-mva" onclick="switchTab('tab-mva', this)">
       <span>PHÂN HỆ 3: NGHẼN MẠCH & GIỚI HẠN NHIỆT</span>
       <span class="tab-badge">MVA / PTDF / OPF</span>
+    </button>
+    <button class="tab-btn tab-board" id="tabbtn-board" onclick="switchTab('tab-board', this)">
+      <span>BẢNG ĐIỂM</span>
+      <span class="tab-badge" style="background:var(--ok-bg); color:var(--ok);">Trực tuyến</span>
     </button>
   </nav>
 
   <main class="container">
+    <div class="notice-bar" id="firstVisitNotice" style="display:none;">
+      <span>Lần đầu sử dụng? Đọc <b>Hướng dẫn Thực hành</b> để biết mục tiêu từng kịch bản, cách chấm điểm và cách nộp bài.</span>
+      <span style="display:flex; gap:8px;">
+        <button class="btn btn-primary btn-sm" onclick="switchTab('tab-guide', document.getElementById('tabbtn-guide'))">Xem hướng dẫn</button>
+        <button class="btn btn-secondary btn-sm" onclick="dismissNotice()">Ẩn</button>
+      </span>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- TAB 0: HƯỚNG DẪN THỰC HÀNH & NỘP BÀI                                -->
+    <!-- ================================================================= -->
+    <section id="tab-guide" class="tab-content">
+      <div class="guide-grid">
+        <div class="panel guide-panel">
+          <div class="panel-title"><span>Quy trình làm bài (6 bước)</span></div>
+          <ol class="step-list">
+            <li><b>Nhập thông tin.</b> Điền <b>Họ và tên</b>, <b>MSSV</b> và <b>Lớp</b> ở góc trên bên phải. Thông tin phải chính xác vì máy chủ nhận diện bài nộp theo MSSV.</li>
+            <li><b>Chọn phân hệ và kịch bản.</b> Mỗi phân hệ (P-f, Q-V, MVA) có 3 kịch bản, tổng cộng <b>9 kịch bản</b>. Bấm vào nút kịch bản ở cột trái để nạp số liệu ban đầu.</li>
+            <li><b>Thao tác điều độ.</b> Kéo các thanh trượt, quan sát thẻ KPI, sơ đồ và biểu đồ thay đổi theo thời gian thực. Mục tiêu của từng phân hệ được trình bày ở khung bên phải.</li>
+            <li><b>Ghi nhận kết quả.</b> Khi đạt trạng thái mong muốn, bấm <code>Ghi nhận Kịch bản vào Báo cáo</code>. Bản ghi xuất hiện trong bảng phía dưới kèm <b>điểm dự kiến</b>. Được ghi nhận nhiều lần, <b>hệ thống tự lấy bản ghi điểm cao nhất</b> của mỗi kịch bản.</li>
+            <li><b>Điều chỉnh bài làm.</b> Nếu điểm chưa cao, quay lại kịch bản (bấm vào ô kịch bản trong khung <i>Tiến độ &amp; Nộp bài</i>) để thao tác lại. Có thể ghi chú giải thích cho từng bản ghi hoặc xóa bản ghi thừa. Viết <b>Nhận xét &amp; Kết luận</b> vào ô cuối trang.</li>
+            <li><b>Nộp bài.</b> Bấm <code>Nộp bài</code>. Máy chủ <b>chấm lại độc lập</b> từ thông số điều khiển, trả điểm ngay và cập nhật <b>Bảng điểm</b> trực tuyến. Mỗi lần nộp tính 1 lượt, số lượt tối đa do giảng viên quy định.</li>
+          </ol>
+          <div class="tip">Bài làm được tự động lưu trên trình duyệt đang dùng. Nếu đổi máy hoặc xóa dữ liệu trình duyệt, bài làm chưa nộp sẽ mất, nên hãy <b>Xuất Báo cáo (.CSV)</b> để giữ bản dự phòng.</div>
+
+          <h4>Thang điểm (100 điểm → quy về hệ 10)</h4>
+          <table class="report-table" style="margin-top:6px;">
+            <thead><tr><th>Phần</th><th>Tiêu chí</th><th class="num">Điểm</th></tr></thead>
+            <tbody>
+              <tr><td rowspan="3">P-f (×3 KB)</td><td>Tần số: |Δf| ≤ 0,02 Hz đạt 5; ≤ 0,10 đạt 4; ≤ 0,20 đạt 3; ≤ 0,50 đạt 1</td><td class="num">5</td></tr>
+              <tr><td>Dự trữ quay ≥ 300 MW</td><td class="num">2</td></tr>
+              <tr><td>Chi phí so với lời giải tối ưu (chỉ xét khi |Δf| ≤ 0,2 Hz)</td><td class="num">3</td></tr>
+              <tr><td rowspan="3">Q-V (×3 KB)</td><td>Mỗi nút trong dải 0,95–1,05 p.u. đạt 1 điểm</td><td class="num">4</td></tr>
+              <tr><td>V4 sát 1,00 p.u.: lệch ≤ 0,02 đạt 3; ≤ 0,035 đạt 2; ≤ 0,05 đạt 1</td><td class="num">3</td></tr>
+              <tr><td>Tổn thất ΔP so với tối ưu (chỉ xét khi cả 4 nút đạt chuẩn)</td><td class="num">3</td></tr>
+              <tr><td rowspan="3">MVA-OPF (×3 KB)</td><td>Mọi đường dây ≤ 100 % S<sub>max</sub> (thừa nguồn: 0 điểm cả kịch bản)</td><td class="num">5</td></tr>
+              <tr><td>Chi phí so với lời giải OPF tối ưu (chỉ xét khi không quá tải)</td><td class="num">5</td></tr>
+              <tr><td>Dùng nút "Gợi ý Điểm Tối ưu OPF" bị trừ</td><td class="num">−3</td></tr>
+              <tr><td>Nhận xét</td><td>Độ đầy đủ: ≥ 400 ký tự đạt 10; ≥ 250 đạt 8; ≥ 120 đạt 5; ≥ 40 đạt 2 (GV có thể chấm lại)</td><td class="num">10</td></tr>
+              <tr><td colspan="2"><b>Tổng</b>: 9 kịch bản × 10 + Nhận xét 10 = 100 điểm, điểm hệ 10 = Tổng / 10</td><td class="num"><b>100</b></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="panel guide-panel">
+          <div class="panel-title"><span>Mục tiêu &amp; gợi ý thao tác từng phân hệ</span></div>
+
+          <h3>Phân hệ 1 — Điều độ Tần số (P-f)</h3>
+          <p><b>Mục tiêu:</b> giữ f = 50,00 Hz (cân bằng P<sub>phát</sub> = P<sub>tải</sub>), dự trữ quay ≥ 300 MW, chi phí vận hành thấp nhất.</p>
+          <ul>
+            <li>Quan hệ: <code>f = 50 + ΔP / 1000</code> (K<sub>ht</sub> = 1000 MW/Hz). Thiếu nguồn 100 MW thì f giảm 0,1 Hz.</li>
+            <li>Thứ tự kinh tế (merit order): <b>NLTT 0,20</b> &lt; <b>Than 1,25</b> &lt; <b>Thủy/Khí 1,85</b> triệu đ/MWh. Ưu tiên nguồn rẻ trước.</li>
+            <li>Dự trữ quay = 2500 − P<sub>thủy/khí</sub>, nên không đẩy nguồn linh hoạt vượt 2200 MW.</li>
+            <li>Nút <code>Tự động Điều tần (AGC)</code> chỉ cân bằng bằng nguồn thủy/khí, <b>chưa chắc tối ưu chi phí</b>.</li>
+            <li>KB2: hạn chế cắt giảm NLTT, cân nhắc giảm than về mức tối thiểu kỹ thuật. KB3: than bị giới hạn 1400 MW.</li>
+          </ul>
+
+          <h3 style="margin-top:16px;">Phân hệ 2 — Điện áp &amp; Công suất phản kháng (Q-V)</h3>
+          <p><b>Mục tiêu:</b> cả 4 nút trong dải 0,95–1,05 p.u., V4 sát 1,00 p.u., tổn thất ΔP nhỏ nhất.</p>
+          <ul>
+            <li><b>AVR (Nút 1)</b> nâng hoặc hạ điện áp toàn trục; <b>OLTC</b> chỉnh tinh điện áp phía 220 kV (Nút 3, 4).</li>
+            <li><b>Tụ bù (+)</b> tại Nút 4 cấp Q tại chỗ, giảm dòng Q truyền tải nên giảm cả sụt áp và tổn thất.</li>
+            <li>KB2 (thấp điểm đêm, hiệu ứng Ferranti): dung dẫn đường dây dư Q, nên dùng <b>kháng bù (−)</b> để hút Q.</li>
+            <li>KB3 (N-1): tổng trở đường dây tăng gấp đôi, cần phối hợp cả ba thiết bị.</li>
+          </ul>
+
+          <h3 style="margin-top:16px;">Phân hệ 3 — Nghẽn mạch &amp; Giới hạn nhiệt (MVA/OPF)</h3>
+          <p><b>Mục tiêu:</b> mọi đường dây ≤ 100 % giới hạn nhiệt và tổng chi phí thấp nhất, không để PG1 + PG2 vượt phụ tải.</p>
+          <ul>
+            <li>Hệ số PTDF: PG1 đẩy <b>2/3</b> công suất lên ĐZ 1-3, PG2 chỉ <b>1/3</b>. Chuyển bớt từ G1 sang G2 sẽ giải tỏa ĐZ 1-3.</li>
+            <li>G3 tại nút tải đắt nhất (2,60 triệu đ/MWh) và tự bù phần thiếu, nên hạn chế dùng.</li>
+            <li><b>Tụ bù Q</b> tại Nút 3 giảm thành phần Q, giải phóng dung lượng MVA cho công suất tác dụng.</li>
+            <li>Nút <code>Gợi ý Điểm Tối ưu OPF</code> chỉ để tham khảo: kịch bản đã dùng gợi ý bị <b>trừ 3 điểm</b>.</li>
+          </ul>
+
+          <h3 style="margin-top:16px;">Gợi ý viết Nhận xét &amp; Kết luận</h3>
+          <ul>
+            <li>Vì sao điều chỉnh công suất tác dụng ảnh hưởng tần số, còn công suất phản kháng ảnh hưởng điện áp?</li>
+            <li>Đánh đổi giữa an ninh hệ thống và chi phí vận hành bạn gặp ở kịch bản nào?</li>
+            <li>So sánh trạng thái trước và sau sự cố N-1 ở từng phân hệ.</li>
+            <li>Bài học về thứ tự huy động nguồn (merit order) và chi phí nghẽn mạch.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
     <!-- ================================================================= -->
     <!-- TAB 1: ĐIỀU ĐỘ CÔNG SUẤT TÁC DỤNG & TẦN SỐ (P - f)                 -->
     <!-- ================================================================= -->
@@ -1055,7 +1280,7 @@
           </div>
 
           <div class="btn-row">
-            <button class="btn btn-secondary" onclick="solveOptimalOPF()">Gợi ý Điểm Tối ưu OPF</button>
+            <button class="btn btn-secondary" onclick="solveOptimalOPF()" title="Kịch bản dùng gợi ý bị trừ 3 điểm">Gợi ý Điểm Tối ưu OPF (−3đ)</button>
             <button class="btn btn-primary" onclick="recordResult('MVA-OPF')">Ghi nhận Kịch bản vào Báo cáo</button>
           </div>
         </div>
@@ -1147,13 +1372,55 @@
     </section>
 
     <!-- ================================================================= -->
+    <!-- TAB 4: BẢNG ĐIỂM CÔNG BỐ TRỰC TUYẾN                                -->
+    <!-- ================================================================= -->
+    <section id="tab-board" class="tab-content">
+      <div class="panel">
+        <div class="panel-title">
+          <span>Bảng Điểm Thực hành Điều độ — Công bố Trực tuyến</span>
+          <span id="boardUpdated" style="font-size:0.75rem; color:var(--text-muted);"></span>
+        </div>
+        <div class="board-tools">
+          <input type="search" id="boardSearch" placeholder="Tìm theo tên hoặc MSSV..." oninput="renderBoard()" style="flex:1 1 220px;" />
+          <select id="boardClass" onchange="renderBoard()"><option value="">Tất cả các lớp</option></select>
+          <button class="btn btn-secondary btn-sm" onclick="loadBoard()">Tải lại</button>
+          <span style="font-size:0.75rem; color:var(--text-muted);">Tự cập nhật mỗi 30 giây</span>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th class="num">Hạng</th>
+                <th>Họ và tên</th>
+                <th>MSSV</th>
+                <th>Lớp</th>
+                <th class="num">P-f /30</th>
+                <th class="num">Q-V /30</th>
+                <th class="num">MVA /30</th>
+                <th class="num">NX /10</th>
+                <th class="num">Điểm (hệ 10)</th>
+                <th class="num">Lần nộp</th>
+                <th>Cập nhật</th>
+              </tr>
+            </thead>
+            <tbody id="boardBody">
+              <tr><td colspan="11" style="text-align:center; color:var(--text-muted);">Đang tải bảng điểm...</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div id="boardStats" style="margin-top:10px; font-size:0.8rem; color:var(--text-muted);"></div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
     <!-- KHU VỰC BÁO CÁO THỰC HÀNH CỦA SINH VIÊN & NHẬT KÝ SCADA           -->
     <!-- ================================================================= -->
+    <div id="labArea">
     <div class="bottom-grid">
       <div class="panel">
         <div class="panel-title">
           <span>Bảng Kết quả Thực hành Đã Ghi nhận (Lab Report)</span>
-          <button class="btn btn-secondary" style="padding:4px 10px; font-size:0.75rem; flex:unset;" onclick="clearReportTable()">Xóa bảng</button>
+          <button class="btn btn-secondary btn-sm" onclick="clearReportTable()">Xóa bảng</button>
         </div>
         <div style="overflow-x:auto;">
           <table class="report-table">
@@ -1164,11 +1431,14 @@
                 <th>Thông số Điều khiển</th>
                 <th>Chỉ số Đạt được</th>
                 <th>Đánh giá</th>
+                <th class="num">Điểm dự kiến</th>
+                <th>Ghi chú / Giải thích</th>
+                <th></th>
               </tr>
             </thead>
             <tbody id="reportTableBody">
               <tr>
-                <td colspan="5" style="text-align:center; color:var(--text-muted);">
+                <td colspan="8" style="text-align:center; color:var(--text-muted);">
                   Chưa có bản ghi nào. Hãy điều chỉnh thông số và nhấn "Ghi nhận Kịch bản vào Báo cáo".
                 </td>
               </tr>
@@ -1185,13 +1455,329 @@
         <div class="log-console" id="scadaLogConsole"></div>
       </div>
     </div>
+
+    <!-- TIẾN ĐỘ, NHẬN XÉT & NỘP BÀI -->
+    <div class="panel" id="submitPanel" style="margin-top:24px;">
+      <div class="panel-title">
+        <span>Tiến độ, Nhận xét &amp; Nộp bài</span>
+        <span id="serverStatus" class="server-status">Đang kiểm tra máy chủ...</span>
+      </div>
+
+      <div class="progress-grid" id="progressGrid"></div>
+
+      <div class="submit-row">
+        <div>
+          <div style="display:flex; justify-content:space-between; font-size:0.85rem; font-weight:600; margin-bottom:6px;">
+            <span>Nhận xét &amp; Kết luận của sinh viên (10 điểm)</span>
+            <span id="conclusionCount" style="font-family:var(--font-mono); color:var(--text-muted);">0 / 400 ký tự</span>
+          </div>
+          <textarea id="conclusion" class="conclusion" oninput="onConclusionInput()" placeholder="Trình bày ngắn gọn: cách bạn xử lý từng phân hệ, đánh đổi giữa an ninh và chi phí, so sánh trước/sau sự cố N-1, bài học rút ra... (xem gợi ý ở tab Hướng dẫn)"></textarea>
+        </div>
+        <div class="score-box">
+          <div style="font-size:0.78rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-muted);">Điểm dự kiến (hệ 10)</div>
+          <div class="score-big" id="estScore">0.0</div>
+          <div class="score-line"><span>P-f</span><span id="estPF">0 / 30</span></div>
+          <div class="score-line"><span>Q-V</span><span id="estQV">0 / 30</span></div>
+          <div class="score-line"><span>MVA-OPF</span><span id="estMVA">0 / 30</span></div>
+          <div class="score-line"><span>Nhận xét</span><span id="estNX">0 / 10</span></div>
+          <div class="score-line" style="border-top:1px dashed var(--border); padding-top:6px;"><span>Lượt nộp đã dùng</span><span id="estAttempts">–</span></div>
+          <button class="btn btn-success" id="submitBtn" onclick="submitWork()" style="margin-top:6px; flex:unset; padding:11px;">Nộp bài cho Giảng viên</button>
+        </div>
+      </div>
+    </div>
+    </div>
   </main>
+
+  <!-- HỘP THOẠI KẾT QUẢ -->
+  <div class="modal-backdrop" id="modalBackdrop" onclick="if (event.target === this) closeModal()">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h2 id="modalTitle"></h2>
+      <div id="modalBody"></div>
+      <div class="btn-row" id="modalActions"></div>
+    </div>
+  </div>
 
   <script>
     /* =====================================================================
+       CẤU HÌNH MÁY CHỦ NỘP BÀI
+       Dán URL Web App của Google Apps Script (kết thúc bằng /exec) vào đây.
+       Xem hướng dẫn cài đặt trong README.md.
+       ===================================================================== */
+    const SUBMIT_API_URL = '';
+    const STORAGE_KEY = 'emsLab.v1';
+
+/* <<EMS_GRADER_BEGIN>> */
+/* =====================================================================
+   EMS_GRADER — MÔ HÌNH TÍNH TOÁN & THANG CHẤM ĐIỂM DÙNG CHUNG
+   Khối mã này được chép NGUYÊN VĂN vào index.html (trình duyệt) và
+   apps-script/Code.gs (máy chủ) bởi tools/build.py. Chỉ sửa ở file
+   tools/grader.js rồi chạy lại build.py để hai nơi luôn đồng bộ.
+   Máy chủ tự tính lại điểm từ thông số điều khiển thô, nên sinh viên
+   không thể sửa điểm ở phía trình duyệt.
+   ===================================================================== */
+var EMS_GRADER = (function () {
+  var VERSION = '2026.10';
+
+  var SCENARIOS = {
+    pf: {
+      1: { name: 'Kịch bản 1: Cao điểm tối 19:00', load: 4200, resMax: 300, coalMax: 2200, coalInit: 1800, hydroInit: 1600, resInit: 100 },
+      2: { name: 'Kịch bản 2: Giờ trưa 12:00 (Đỉnh ĐMT)', load: 2800, resMax: 2000, coalMax: 2200, coalInit: 1400, hydroInit: 400, resInit: 100 },
+      3: { name: 'Kịch bản 3: Sự cố N-1 Nhảy tổ máy 600MW', load: 3800, resMax: 800, coalMax: 1400, coalInit: 1400, hydroInit: 1100, resInit: 100 }
+    },
+    qv: {
+      1: { name: 'Kịch bản 1: Cao điểm chiều (Tải cảm lớn)', P_L: 600, Q_L: 380, Q_cap: 50, R12: 0.012, X12: 0.085, R34: 0.015, X34: 0.065 },
+      2: { name: 'Kịch bản 2: Thấp điểm đêm (Hiệu ứng Ferranti)', P_L: 120, Q_L: 30, Q_cap: 280, R12: 0.012, X12: 0.085, R34: 0.015, X34: 0.065 },
+      3: { name: 'Kịch bản 3: Sự cố N-1 Đường dây 500 kV', P_L: 520, Q_L: 320, Q_cap: 25, R12: 0.024, X12: 0.170, R34: 0.015, X34: 0.065 }
+    },
+    mva: {
+      1: { name: 'Kịch bản 1: Cao điểm truyền tải (Bẫy Merit Order)', pLoad: 1000, qLoad: 360, s13Max: 500, s23Max: 600, s12Max: 450, pg1Init: 660, pg2Init: 300, qInit: 0 },
+      2: { name: 'Kịch bản 2: Sự cố N-1 Nhảy 1 mạch ĐZ 1-3', pLoad: 950, qLoad: 340, s13Max: 350, s23Max: 600, s12Max: 450, pg1Init: 550, pg2Init: 300, qInit: 0 },
+      3: { name: 'Kịch bản 3: Bùng nổ NLTT Nút 1 (Nghẽn mạch)', pLoad: 1100, qLoad: 380, s13Max: 480, s23Max: 550, s12Max: 400, pg1Init: 720, pg2Init: 320, qInit: 0 }
+    }
+  };
+
+  var MODULE_LABEL = { pf: 'P-f', qv: 'Q-V', mva: 'MVA-OPF' };
+  var OPF_HINT_PENALTY = 3;
+
+  // Miền giá trị hợp lệ của từng thanh trượt: [min, max, bước]
+  function limitsFor(mod, sc) {
+    if (mod === 'pf') return { coal: [600, sc.coalMax, 20], hydro: [0, 2500, 20], res: [0, 100, 5] };
+    if (mod === 'qv') return { v1: [0.95, 1.05, 0.01], qComp: [-150, 300, 10], tap: [0.92, 1.08, 0.01] };
+    return { pg1: [0, 800, 10], pg2: [0, 700, 10], qComp: [0, 300, 10] };
+  }
+
+  /* ---------------- Mô hình tính toán (giữ nguyên công thức gốc) ---------------- */
+  function computePF(sc, c) {
+    var resMW = Math.round(sc.resMax * (c.res / 100));
+    var totalGen = c.coal + c.hydro + resMW;
+    var deltaP = totalGen - sc.load;
+    var freq = 50.0 + (deltaP / 1000.0);
+    var reserveMW = 2500 - c.hydro;
+    var totalCost = (c.coal * 1.25) + (c.hydro * 1.85) + (resMW * 0.20);
+    var unitCost = totalGen > 0 ? Math.round((totalCost * 1000) / totalGen) : 0;
+    return { resMW: resMW, totalGen: totalGen, deltaP: deltaP, freq: freq, reserveMW: reserveMW, totalCost: totalCost, unitCost: unitCost };
+  }
+
+  function computeQV(sc, c) {
+    var qNet4 = sc.Q_L - c.qComp;
+    var qFlow12 = qNet4 - sc.Q_cap + 30;
+    var v1 = c.v1;
+    var v2 = v1 - ((sc.P_L * sc.R12 + qFlow12 * sc.X12) / 1000.0);
+    var v3 = (v2 * c.tap) - ((qNet4 * 0.025) / 1000.0);
+    var v4 = v3 - ((sc.P_L * sc.R34 + qNet4 * sc.X34) / (1000.0 * Math.max(0.8, v3)));
+    var pLoss = (((sc.P_L * sc.P_L + qFlow12 * qFlow12) * sc.R12) + ((sc.P_L * sc.P_L + qNet4 * qNet4) * sc.R34)) / (1000.0 * v2 * v2);
+    var cosPhi = sc.P_L / Math.sqrt(sc.P_L * sc.P_L + qNet4 * qNet4);
+    return { qNet4: qNet4, qFlow12: qFlow12, v1: v1, v2: v2, v3: v3, v4: v4, pLoss: pLoss, cosPhi: cosPhi };
+  }
+
+  function computeMVA(sc, c) {
+    var pg1 = c.pg1, pg2 = c.pg2;
+    var pg3 = Math.max(0, sc.pLoad - pg1 - pg2);
+    var overGen = Math.max(0, (pg1 + pg2) - sc.pLoad);
+    var qNet = sc.qLoad - c.qComp;
+    var p13 = (2.0 / 3.0) * pg1 + (1.0 / 3.0) * pg2;
+    var p23 = (1.0 / 3.0) * pg1 + (2.0 / 3.0) * pg2;
+    var p12 = Math.abs((1.0 / 3.0) * pg1 - (1.0 / 3.0) * pg2);
+    var s13 = Math.sqrt(p13 * p13 + Math.pow(0.50 * qNet, 2));
+    var s23 = Math.sqrt(p23 * p23 + Math.pow(0.35 * qNet, 2));
+    var s12 = Math.sqrt(p12 * p12 + Math.pow(0.15 * qNet, 2));
+    var pct13 = (s13 / sc.s13Max) * 100.0;
+    var pct23 = (s23 / sc.s23Max) * 100.0;
+    var pct12 = (s12 / sc.s12Max) * 100.0;
+    var totalCost = (pg1 * 1.10) + (pg2 * 1.60) + (pg3 * 2.60);
+    var idealG1 = Math.min(800, sc.pLoad);
+    var idealG2 = Math.max(0, sc.pLoad - idealG1);
+    var unconstrainedCost = (idealG1 * 1.10) + (idealG2 * 1.60);
+    var congestionCost = Math.max(0, totalCost - unconstrainedCost);
+    return {
+      pg3: pg3, overGen: overGen, qNet: qNet, s13: s13, s23: s23, s12: s12,
+      pct13: pct13, pct23: pct23, pct12: pct12, maxPct: Math.max(pct13, pct23, pct12),
+      totalCost: totalCost, congestionCost: congestionCost
+    };
+  }
+
+  /* ---------------- Kiểm tra & chuẩn hóa thông số ---------------- */
+  // Trả về bộ thông số đã làm tròn theo bước thanh trượt, hoặc null nếu không hợp lệ.
+  function sanitize(mod, scenarioId, controls) {
+    var sc = SCENARIOS[mod] && SCENARIOS[mod][scenarioId];
+    if (!sc || !controls || typeof controls !== 'object') return null;
+    var lim = limitsFor(mod, sc);
+    var out = {};
+    for (var key in lim) {
+      var v = Number(controls[key]);
+      var lo = lim[key][0], hi = lim[key][1], step = lim[key][2];
+      if (!isFinite(v) || v < lo - step / 2 || v > hi + step / 2) return null;
+      var snapped = lo + Math.round((v - lo) / step) * step;
+      snapped = Math.min(hi, Math.max(lo, snapped));
+      out[key] = Math.round(snapped * 1000) / 1000;
+    }
+    return out;
+  }
+
+  /* ---------------- Lời giải chuẩn (tìm vét cạn theo bước thanh trượt) ---------------- */
+  var benchCache = {};
+
+  function benchmark(mod, id) {
+    var key = mod + id;
+    if (benchCache[key] !== undefined) return benchCache[key];
+    var sc = SCENARIOS[mod][id];
+    var best = Infinity;
+    if (mod === 'pf') {
+      // Chi phí thấp nhất khi cân bằng tuyệt đối (Δf = 0) và dự trữ quay ≥ 300 MW
+      for (var coal = 600; coal <= sc.coalMax; coal += 20) {
+        for (var res = 0; res <= 100; res += 5) {
+          var hydro = sc.load - coal - Math.round(sc.resMax * res / 100);
+          if (hydro < 0 || hydro > 2200 || hydro % 20 !== 0) continue;
+          var r = computePF(sc, { coal: coal, hydro: hydro, res: res });
+          if (r.totalCost < best) best = r.totalCost;
+        }
+      }
+    } else if (mod === 'qv') {
+      // Tổn thất nhỏ nhất khi cả 4 nút đạt chuẩn và |V4 − 1| ≤ 0,02 p.u.
+      for (var i = 0; i <= 10; i++) {
+        for (var q = -150; q <= 300; q += 10) {
+          for (var t = 0; t <= 16; t++) {
+            var rq = computeQV(sc, { v1: 0.95 + i * 0.01, qComp: q, tap: 0.92 + t * 0.01 });
+            var ok = [rq.v1, rq.v2, rq.v3, rq.v4].every(function (v) { return v >= 0.95 && v <= 1.05; });
+            if (ok && Math.abs(rq.v4 - 1) <= 0.02 && rq.pLoss < best) best = rq.pLoss;
+          }
+        }
+      }
+    } else {
+      // Chi phí thấp nhất khi mọi đường dây ≤ 100 % và không thừa nguồn
+      for (var g1 = 0; g1 <= 800; g1 += 10) {
+        for (var g2 = 0; g2 <= 700 && g1 + g2 <= sc.pLoad; g2 += 10) {
+          for (var qc = 0; qc <= 300; qc += 10) {
+            var rm = computeMVA(sc, { pg1: g1, pg2: g2, qComp: qc });
+            if (rm.maxPct <= 100 && rm.totalCost < best) { best = rm.totalCost; break; }
+          }
+        }
+      }
+    }
+    benchCache[key] = best;
+    return best;
+  }
+
+  function tier(value, steps) {
+    // steps: [[ngưỡng, điểm], ...] theo thứ tự ngưỡng tăng dần
+    for (var i = 0; i < steps.length; i++) if (value <= steps[i][0]) return steps[i][1];
+    return 0;
+  }
+
+  /* ---------------- Chấm 1 bản ghi (thang 10 điểm / kịch bản) ---------------- */
+  function gradeRecord(mod, scenarioId, rawControls, hintUsed) {
+    var c = sanitize(mod, scenarioId, rawControls);
+    if (!c) return { score: 0, max: 10, parts: [], note: 'Thông số điều khiển không hợp lệ' };
+    var sc = SCENARIOS[mod][scenarioId];
+    var parts = [];
+    var note = '';
+
+    if (mod === 'pf') {
+      var r = computePF(sc, c);
+      var df = Math.abs(r.freq - 50);
+      var pFreq = tier(df - 1e-9, [[0.02, 5], [0.10, 4], [0.20, 3], [0.50, 1]]);
+      var pRes = r.reserveMW >= 300 ? 2 : 0;
+      var pEco = 0;
+      if (df <= 0.20 + 1e-9) pEco = tier(r.totalCost / benchmark('pf', scenarioId), [[1.005, 3], [1.03, 2], [1.08, 1]]);
+      parts = [
+        { label: 'Tần số |Δf| = ' + df.toFixed(2) + ' Hz', pts: pFreq, max: 5 },
+        { label: 'Dự trữ quay ' + r.reserveMW + ' MW (≥ 300)', pts: pRes, max: 2 },
+        { label: 'Chi phí ' + r.totalCost.toFixed(0) + ' / tối ưu ' + benchmark('pf', scenarioId).toFixed(0) + ' Tr.đ/h', pts: pEco, max: 3 }
+      ];
+      if (df > 0.20) note = 'Tần số ngoài dải ±0,2 Hz nên không xét điểm kinh tế';
+    } else if (mod === 'qv') {
+      var q = computeQV(sc, c);
+      var vs = [q.v1, q.v2, q.v3, q.v4];
+      var inBand = vs.filter(function (v) { return v >= 0.95 && v <= 1.05; }).length;
+      var dv4 = Math.abs(q.v4 - 1);
+      var pV4 = tier(dv4, [[0.02, 3], [0.035, 2], [0.05, 1]]);
+      var pLoss = 0;
+      if (inBand === 4) pLoss = tier(q.pLoss / benchmark('qv', scenarioId), [[1.03, 3], [1.10, 2], [1.25, 1]]);
+      parts = [
+        { label: inBand + '/4 nút trong dải 0,95–1,05 p.u.', pts: inBand, max: 4 },
+        { label: 'V4 = ' + q.v4.toFixed(3) + ' p.u. (lệch ' + dv4.toFixed(3) + ')', pts: pV4, max: 3 },
+        { label: 'Tổn thất ' + q.pLoss.toFixed(2) + ' / tối ưu ' + benchmark('qv', scenarioId).toFixed(2) + ' MW', pts: pLoss, max: 3 }
+      ];
+      if (inBand < 4) note = 'Còn nút vi phạm điện áp nên không xét điểm tổn thất';
+    } else {
+      var m = computeMVA(sc, c);
+      if (m.overGen > 0) {
+        parts = [{ label: 'Thừa nguồn ' + m.overGen + ' MW (PG1 + PG2 > phụ tải)', pts: 0, max: 10 }];
+        note = 'Phương án không khả thi';
+      } else {
+        var pTh = tier(m.maxPct, [[100, 5], [105, 2], [110, 1]]);
+        var pCost = 0;
+        if (m.maxPct <= 100) pCost = tier(m.totalCost / benchmark('mva', scenarioId), [[1.005, 5], [1.02, 4], [1.05, 3], [1.10, 2], [1.20, 1]]);
+        parts = [
+          { label: 'Mang tải lớn nhất ' + m.maxPct.toFixed(1) + ' % (≤ 100)', pts: pTh, max: 5 },
+          { label: 'Chi phí ' + m.totalCost.toFixed(0) + ' / tối ưu ' + benchmark('mva', scenarioId).toFixed(0) + ' Tr.đ/h', pts: pCost, max: 5 }
+        ];
+        if (m.maxPct > 100) note = 'Còn đường dây quá tải nên không xét điểm kinh tế';
+        if (hintUsed) parts.push({ label: 'Dùng nút "Gợi ý Điểm Tối ưu OPF"', pts: -OPF_HINT_PENALTY, max: 0 });
+      }
+    }
+
+    var score = 0;
+    parts.forEach(function (p) { score += p.pts; });
+    return { score: Math.max(0, Math.min(10, score)), max: 10, parts: parts, note: note };
+  }
+
+  /* ---------------- Chấm phần nhận xét / kết luận (10 điểm) ---------------- */
+  function gradeConclusion(text) {
+    var n = String(text || '').replace(/\s+/g, ' ').trim().length;
+    return tier(-n, [[-400, 10], [-250, 8], [-120, 5], [-40, 2]]);
+  }
+
+  /* ---------------- Chấm toàn bộ bài nộp (thang 100 → hệ 10) ---------------- */
+  // records: [{ module: 'pf'|'qv'|'mva', scenario: 1..3, controls: {...}, hintUsed: bool }]
+  function gradeSubmission(records, conclusion) {
+    var result = { version: VERSION, modules: {}, total100: 0, score10: 0 };
+    ['pf', 'qv', 'mva'].forEach(function (mod) {
+      var mres = { label: MODULE_LABEL[mod], total: 0, max: 30, scenarios: {} };
+      [1, 2, 3].forEach(function (id) {
+        var best = { score: 0, max: 10, parts: [], note: 'Chưa ghi nhận kịch bản này', recordIndex: -1 };
+        (records || []).forEach(function (rec, idx) {
+          if (!rec || rec.module !== mod || Number(rec.scenario) !== id) return;
+          var g = gradeRecord(mod, id, rec.controls, !!rec.hintUsed);
+          if (best.recordIndex < 0 || g.score > best.score) { g.recordIndex = idx; best = g; }
+        });
+        mres.scenarios[id] = best;
+        mres.total += best.score;
+      });
+      result.modules[mod] = mres;
+      result.total100 += mres.total;
+    });
+    result.conclusion = gradeConclusion(conclusion);
+    result.total100 += result.conclusion;
+    result.score10 = Math.round(result.total100) / 10;
+    return result;
+  }
+
+  return {
+    VERSION: VERSION,
+    SCENARIOS: SCENARIOS,
+    MODULE_LABEL: MODULE_LABEL,
+    OPF_HINT_PENALTY: OPF_HINT_PENALTY,
+    computePF: computePF,
+    computeQV: computeQV,
+    computeMVA: computeMVA,
+    sanitize: sanitize,
+    benchmark: benchmark,
+    gradeRecord: gradeRecord,
+    gradeConclusion: gradeConclusion,
+    gradeSubmission: gradeSubmission
+  };
+})();
+/* <<EMS_GRADER_END>> */
+
+    /* =====================================================================
        QUẢN LÝ ĐỒNG HỒ, CHUYỂN TAB VÀ NHẬT KÝ SCADA
        ===================================================================== */
-    const reportRecords = [];
+    let reportRecords = [];
+    const mvaHintUsed = { 1: false, 2: false, 3: false };
+    let serverInfo = null;
+    let boardRows = [];
+    let boardTimer = null;
 
     function updateClock() {
       const now = new Date();
@@ -1199,6 +1785,10 @@
     }
     setInterval(updateClock, 1000);
     updateClock();
+
+    function escapeHtml(s) {
+      return String(s == null ? '' : s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+    }
 
     function addScadaLog(moduleName, message) {
       const consoleEl = document.getElementById('scadaLogConsole');
@@ -1214,17 +1804,55 @@
       document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
       document.getElementById(tabId).classList.add('active');
       btnEl.classList.add('active');
+      document.getElementById('labArea').style.display = tabId === 'tab-board' ? 'none' : '';
+      clearInterval(boardTimer);
+      if (tabId === 'tab-board') {
+        loadBoard();
+        boardTimer = setInterval(() => { if (!document.hidden) loadBoard(); }, 30000);
+      }
       addScadaLog('HỆ THỐNG', `Chuyển màn hình giám sát sang phân hệ ${tabId.toUpperCase()}.`);
+    }
+
+    /* =====================================================================
+       LƯU NHÁP BÀI LÀM TRÊN TRÌNH DUYỆT
+       ===================================================================== */
+    function saveDraft() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          name: document.getElementById('studentName').value,
+          mssv: document.getElementById('studentId').value,
+          cls: document.getElementById('studentClass').value,
+          conclusion: document.getElementById('conclusion').value,
+          records: reportRecords,
+          noticeDismissed: document.getElementById('firstVisitNotice').style.display === 'none'
+        }));
+      } catch (e) { /* trình duyệt chặn lưu trữ — bỏ qua */ }
+    }
+
+    function loadDraft() {
+      let d = null;
+      try { d = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); } catch (e) { d = null; }
+      if (!d) {
+        document.getElementById('firstVisitNotice').style.display = '';
+        return;
+      }
+      document.getElementById('studentName').value = d.name || '';
+      document.getElementById('studentId').value = d.mssv || '';
+      document.getElementById('studentClass').value = d.cls || '';
+      document.getElementById('conclusion').value = d.conclusion || '';
+      reportRecords = Array.isArray(d.records) ? d.records.filter(r => r && r.module && r.controls) : [];
+      document.getElementById('firstVisitNotice').style.display = d.noticeDismissed ? 'none' : '';
+    }
+
+    function dismissNotice() {
+      document.getElementById('firstVisitNotice').style.display = 'none';
+      saveDraft();
     }
 
     /* =====================================================================
        PHÂN HỆ 1: ĐIỀU ĐỘ CÔNG SUẤT TÁC DỤNG & TẦN SỐ (P - f)
        ===================================================================== */
-    const pfScenarios = {
-      1: { name: 'Kịch bản 1: Cao điểm tối 19:00', load: 4200, resMax: 300, coalMax: 2200, coalInit: 1800, hydroInit: 1600, resInit: 100 },
-      2: { name: 'Kịch bản 2: Giờ trưa 12:00 (Đỉnh ĐMT)', load: 2800, resMax: 2000, coalMax: 2200, coalInit: 1400, hydroInit: 400, resInit: 100 },
-      3: { name: 'Kịch bản 3: Sự cố N-1 Nhảy tổ máy 600MW', load: 3800, resMax: 800, coalMax: 1400, coalInit: 1400, hydroInit: 1100, resInit: 100 }
-    };
+    const pfScenarios = EMS_GRADER.SCENARIOS.pf;
     let currentPFScenario = 1;
     let currentPFState = {};
 
@@ -1254,13 +1882,8 @@
       const hydroMW = parseFloat(document.getElementById('pf-slider-hydro').value);
       const resPct = parseFloat(document.getElementById('pf-slider-res').value);
 
-      const resMW = Math.round(sc.resMax * (resPct / 100));
-      const totalGen = coalMW + hydroMW + resMW;
-      const deltaP = totalGen - sc.load;
-      const freq = 50.0 + (deltaP / 1000.0);
-      const reserveMW = 2500 - hydroMW;
-      const totalCost = (coalMW * 1.25) + (hydroMW * 1.85) + (resMW * 0.20);
-      const unitCost = totalGen > 0 ? Math.round((totalCost * 1000) / totalGen) : 0;
+      const r = EMS_GRADER.computePF(sc, { coal: coalMW, hydro: hydroMW, res: resPct });
+      const { resMW, totalGen, deltaP, freq, reserveMW, totalCost, unitCost } = r;
 
       // Cập nhật nhãn thanh trượt
       document.getElementById('pf-lbl-coal').textContent = `${coalMW} MW`;
@@ -1338,9 +1961,12 @@
       document.getElementById('pf-bar-load').style.width = `${(sc.load / 5000) * 100}%`;
 
       currentPFState = {
-        scenario: sc.name,
-        controls: `Than=${coalMW}MW, Thủy/Khí=${hydroMW}MW, NLTT=${resPct}% (${resMW}MW)`,
-        metrics: `f=${freq.toFixed(2)}Hz, ΔP=${deltaP}MW, Chi phí=${totalCost.toFixed(0)} Tr.đ/h`,
+        module: 'pf',
+        scenario: currentPFScenario,
+        scenarioName: sc.name,
+        controls: { coal: coalMW, hydro: hydroMW, res: resPct },
+        controlsText: `Than=${coalMW}MW, Thủy/Khí=${hydroMW}MW, NLTT=${resPct}% (${resMW}MW)`,
+        metricsText: `f=${freq.toFixed(2)}Hz, ΔP=${deltaP}MW, Dự trữ=${reserveMW}MW, Chi phí=${totalCost.toFixed(0)} Tr.đ/h`,
         status: statusLabel
       };
     }
@@ -1361,11 +1987,7 @@
     /* =====================================================================
        PHÂN HỆ 2: ĐIỀU ĐỘ ĐIỆN ÁP & CÔNG SUẤT PHẢN KHÁNG (Q - V)
        ===================================================================== */
-    const qvScenarios = {
-      1: { name: 'Kịch bản 1: Cao điểm chiều (Tải cảm lớn)', P_L: 600, Q_L: 380, Q_cap: 50, R12: 0.012, X12: 0.085, R34: 0.015, X34: 0.065 },
-      2: { name: 'Kịch bản 2: Thấp điểm đêm (Hiệu ứng Ferranti)', P_L: 120, Q_L: 30, Q_cap: 280, R12: 0.012, X12: 0.085, R34: 0.015, X34: 0.065 },
-      3: { name: 'Kịch bản 3: Sự cố N-1 Đường dây 500 kV', P_L: 520, Q_L: 320, Q_cap: 25, R12: 0.024, X12: 0.170, R34: 0.015, X34: 0.065 }
-    };
+    const qvScenarios = EMS_GRADER.SCENARIOS.qv;
     let currentQVScenario = 1;
     let currentQVState = {};
 
@@ -1399,15 +2021,8 @@
       const qComp = parseFloat(document.getElementById('qv-slider-qcomp').value);
       const tap = parseFloat(document.getElementById('qv-slider-tap').value);
 
-      const qNet4 = sc.Q_L - qComp;
-      const qFlow12 = qNet4 - sc.Q_cap + 30;
-
-      const v2 = v1 - ((sc.P_L * sc.R12 + qFlow12 * sc.X12) / 1000.0);
-      const v3 = (v2 * tap) - ((qNet4 * 0.025) / 1000.0);
-      const v4 = v3 - ((sc.P_L * sc.R34 + qNet4 * sc.X34) / (1000.0 * Math.max(0.8, v3)));
-
-      const pLoss = (((sc.P_L * sc.P_L + qFlow12 * qFlow12) * sc.R12) + ((sc.P_L * sc.P_L + qNet4 * qNet4) * sc.R34)) / (1000.0 * v2 * v2);
-      const cosPhi = sc.P_L / Math.sqrt(sc.P_L * sc.P_L + qNet4 * qNet4);
+      const r = EMS_GRADER.computeQV(sc, { v1, qComp, tap });
+      const { qNet4, qFlow12, v2, v3, v4, pLoss, cosPhi } = r;
 
       // Cập nhật nhãn thanh trượt
       document.getElementById('qv-lbl-v1').textContent = `${v1.toFixed(2)} p.u.`;
@@ -1480,9 +2095,12 @@
       });
 
       currentQVState = {
-        scenario: sc.name,
-        controls: `AVR=${v1.toFixed(2)}pu, Q_bù=${qComp}MVAr, OLTC=${tap.toFixed(2)}`,
-        metrics: `V4=${v4.toFixed(3)}pu, cosφ=${cosPhi.toFixed(3)}, ΔP_tổn_thất=${pLoss.toFixed(2)}MW`,
+        module: 'qv',
+        scenario: currentQVScenario,
+        scenarioName: sc.name,
+        controls: { v1, qComp, tap },
+        controlsText: `AVR=${v1.toFixed(2)}pu, Q_bù=${qComp}MVAr, OLTC=${tap.toFixed(2)}`,
+        metricsText: `V1..V4=${voltages.map(v => v.toFixed(3)).join('/')}pu, cosφ=${cosPhi.toFixed(3)}, ΔP_tổn_thất=${pLoss.toFixed(2)}MW`,
         status: statusLabel
       };
     }
@@ -1490,11 +2108,7 @@
     /* =====================================================================
        PHÂN HỆ 3: KIỂM SOÁT QUÁ TẢI NHIỆT & NGHẼN MẠCH TRUYỀN TẢI (MVA/OPF)
        ===================================================================== */
-    const mvaScenarios = {
-      1: { name: 'Kịch bản 1: Cao điểm truyền tải (Bẫy Merit Order)', pLoad: 1000, qLoad: 360, s13Max: 500, s23Max: 600, s12Max: 450, pg1Init: 660, pg2Init: 300, qInit: 0 },
-      2: { name: 'Kịch bản 2: Sự cố N-1 Nhảy 1 mạch ĐZ 1-3', pLoad: 950, qLoad: 340, s13Max: 350, s23Max: 600, s12Max: 450, pg1Init: 550, pg2Init: 300, qInit: 0 },
-      3: { name: 'Kịch bản 3: Bùng nổ NLTT Nút 1 (Nghẽn mạch)', pLoad: 1100, qLoad: 380, s13Max: 480, s23Max: 550, s12Max: 400, pg1Init: 720, pg2Init: 320, qInit: 0 }
-    };
+    const mvaScenarios = EMS_GRADER.SCENARIOS.mva;
     let currentMVAScenario = 1;
     let currentMVAState = {};
 
@@ -1526,33 +2140,8 @@
       const pg2 = parseFloat(document.getElementById('mva-slider-pg2').value);
       const qComp = parseFloat(document.getElementById('mva-slider-qcomp').value);
 
-      const pg3 = Math.max(0, sc.pLoad - pg1 - pg2);
-      const overGen = Math.max(0, (pg1 + pg2) - sc.pLoad);
-      const qNet = sc.qLoad - qComp;
-
-      // Ma trận PTDF mạch vòng tam giác đối xứng
-      const p13 = (2.0 / 3.0) * pg1 + (1.0 / 3.0) * pg2;
-      const p23 = (1.0 / 3.0) * pg1 + (2.0 / 3.0) * pg2;
-      const p12 = Math.abs((1.0 / 3.0) * pg1 - (1.0 / 3.0) * pg2);
-
-      const q13 = 0.50 * qNet;
-      const q23 = 0.35 * qNet;
-      const q12 = 0.15 * qNet;
-
-      const s13 = Math.sqrt(p13 * p13 + q13 * q13);
-      const s23 = Math.sqrt(p23 * p23 + q23 * q23);
-      const s12 = Math.sqrt(p12 * p12 + q12 * q12);
-
-      const pct13 = (s13 / sc.s13Max) * 100.0;
-      const pct23 = (s23 / sc.s23Max) * 100.0;
-      const pct12 = (s12 / sc.s12Max) * 100.0;
-
-      const totalCost = (pg1 * 1.10) + (pg2 * 1.60) + (pg3 * 2.60);
-      // Chi phí lý thuyết khi không nghẽn mạch (huy động tối đa G1 = 800 MW, phần còn lại G2)
-      const idealG1 = Math.min(800, sc.pLoad);
-      const idealG2 = Math.max(0, sc.pLoad - idealG1);
-      const unconstrainedCost = (idealG1 * 1.10) + (idealG2 * 1.60);
-      const congestionCost = Math.max(0, totalCost - unconstrainedCost);
+      const r = EMS_GRADER.computeMVA(sc, { pg1, pg2, qComp });
+      const { pg3, overGen, s13, s23, s12, pct13, pct23, pct12, totalCost, congestionCost } = r;
 
       // Cập nhật nhãn thanh trượt
       document.getElementById('mva-lbl-pg1').textContent = `${pg1} MW`;
@@ -1627,14 +2216,21 @@
       });
 
       currentMVAState = {
-        scenario: sc.name,
-        controls: `PG1=${pg1}MW, PG2=${pg2}MW, PG3=${pg3}MW, Q_bù=${qComp}MVAr`,
-        metrics: `ĐZ1-3=${pct13.toFixed(1)}%, ĐZ2-3=${pct23.toFixed(1)}%, Chi phí=${totalCost.toFixed(0)} Tr.đ/h`,
+        module: 'mva',
+        scenario: currentMVAScenario,
+        scenarioName: sc.name,
+        controls: { pg1, pg2, qComp },
+        controlsText: `PG1=${pg1}MW, PG2=${pg2}MW, PG3=${pg3}MW, Q_bù=${qComp}MVAr`,
+        metricsText: `ĐZ1-3=${pct13.toFixed(1)}%, ĐZ2-3=${pct23.toFixed(1)}%, ĐZ1-2=${pct12.toFixed(1)}%, Chi phí=${totalCost.toFixed(0)} Tr.đ/h`,
         status: statusLabel
       };
     }
 
     function solveOptimalOPF() {
+      if (!mvaHintUsed[currentMVAScenario] &&
+          !confirm(`Dùng gợi ý OPF cho kịch bản ${currentMVAScenario} sẽ bị trừ ${EMS_GRADER.OPF_HINT_PENALTY} điểm ở mọi bản ghi kịch bản này trong phiên làm bài. Tiếp tục?`)) return;
+      mvaHintUsed[currentMVAScenario] = true;
+
       const sc = mvaScenarios[currentMVAScenario];
       // Đóng tối đa tụ bù 300 MVAr và tìm tổ hợp (PG1, PG2) rẻ nhất không vượt 99.5% giới hạn nhiệt
       const bestQ = 300;
@@ -1674,67 +2270,169 @@
     }
 
     /* =====================================================================
-       GHI NHẬN KẾT QUẢ THỰC HÀNH & XUẤT BÁO CÁO CSV CHO SINH VIÊN
+       GHI NHẬN KẾT QUẢ THỰC HÀNH, ĐIỂM DỰ KIẾN & BÁO CÁO CSV
        ===================================================================== */
+    function gradeOf(rec) {
+      return EMS_GRADER.gradeRecord(rec.module, rec.scenario, rec.controls, rec.hintUsed);
+    }
+
+    function pillClass(score) {
+      return score >= 10 ? 'pill-full' : score >= 6 ? 'pill-mid' : 'pill-low';
+    }
+
     function recordResult(moduleCode) {
       let stateObj = null;
       if (moduleCode === 'P-f') stateObj = currentPFState;
       if (moduleCode === 'Q-V') stateObj = currentQVState;
       if (moduleCode === 'MVA-OPF') stateObj = currentMVAState;
 
-      const timeStr = new Date().toTimeString().split(' ')[0];
       const rec = {
-        time: timeStr,
-        module: `${moduleCode} | ${stateObj.scenario}`,
-        controls: stateObj.controls,
-        metrics: stateObj.metrics,
-        status: stateObj.status
+        id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+        time: new Date().toTimeString().split(' ')[0],
+        module: stateObj.module,
+        scenario: stateObj.scenario,
+        scenarioName: stateObj.scenarioName,
+        controls: Object.assign({}, stateObj.controls),
+        hintUsed: stateObj.module === 'mva' && mvaHintUsed[stateObj.scenario],
+        controlsText: stateObj.controlsText,
+        metricsText: stateObj.metricsText,
+        status: stateObj.status,
+        note: ''
       };
       reportRecords.push(rec);
       renderReportTable();
-      addScadaLog('BÁO CÁO', `Đã lưu kết quả thực hành phân hệ [${moduleCode}] vào bảng báo cáo.`);
+      saveDraft();
+      const g = gradeOf(rec);
+      addScadaLog('BÁO CÁO', `Đã lưu kết quả phân hệ [${moduleCode}] ${escapeHtml(rec.scenarioName)} — điểm dự kiến ${g.score}/10.`);
     }
 
     function renderReportTable() {
       const tbody = document.getElementById('reportTableBody');
       if (reportRecords.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Chưa có bản ghi nào.</td></tr>`;
-        return;
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text-muted);">Chưa có bản ghi nào. Hãy điều chỉnh thông số và nhấn "Ghi nhận Kịch bản vào Báo cáo".</td></tr>`;
+      } else {
+        tbody.innerHTML = reportRecords.map(r => {
+          const g = gradeOf(r);
+          return `
+          <tr>
+            <td>${escapeHtml(r.time)}</td>
+            <td>${EMS_GRADER.MODULE_LABEL[r.module]} | ${escapeHtml(r.scenarioName)}${r.hintUsed ? ' <span title="Đã dùng gợi ý OPF" style="color:var(--warn);">(gợi ý)</span>' : ''}</td>
+            <td>${escapeHtml(r.controlsText)}</td>
+            <td>${escapeHtml(r.metricsText)}</td>
+            <td><strong>${escapeHtml(r.status)}</strong></td>
+            <td class="num"><a href="#" class="score-pill ${pillClass(g.score)}" onclick="showRecordDetail('${r.id}'); return false;" title="Xem chi tiết chấm">${g.score}/10</a></td>
+            <td><input class="note-input" value="${escapeHtml(r.note)}" maxlength="300" placeholder="Giải thích thao tác..." oninput="updateNote('${r.id}', this.value)" /></td>
+            <td><button class="btn btn-danger-ghost btn-sm" onclick="deleteRecord('${r.id}')" title="Xóa bản ghi">Xóa</button></td>
+          </tr>`;
+        }).join('');
       }
-      tbody.innerHTML = reportRecords.map(r => `
-        <tr>
-          <td>${r.time}</td>
-          <td>${r.module}</td>
-          <td>${r.controls}</td>
-          <td>${r.metrics}</td>
-          <td><strong>${r.status}</strong></td>
-        </tr>
-      `).join('');
+      renderProgress();
+    }
+
+    function updateNote(id, value) {
+      const rec = reportRecords.find(r => r.id === id);
+      if (rec) { rec.note = value; saveDraft(); }
+    }
+
+    function deleteRecord(id) {
+      const idx = reportRecords.findIndex(r => r.id === id);
+      if (idx < 0) return;
+      reportRecords.splice(idx, 1);
+      renderReportTable();
+      saveDraft();
+      addScadaLog('BÁO CÁO', 'Đã xóa 1 bản ghi khỏi bảng báo cáo.');
     }
 
     function clearReportTable() {
+      if (reportRecords.length && !confirm('Xóa toàn bộ ' + reportRecords.length + ' bản ghi trong bảng báo cáo?')) return;
       reportRecords.length = 0;
       renderReportTable();
+      saveDraft();
       addScadaLog('BÁO CÁO', 'Đã xóa dữ liệu bảng báo cáo thực hành.');
+    }
+
+    function breakdownRows(g) {
+      if (!g.parts.length) return `<tr><td colspan="2" style="color:var(--text-muted);">${escapeHtml(g.note)}</td></tr>`;
+      return g.parts.map(p => `<tr><td>${escapeHtml(p.label)}</td><td class="num">${p.pts}${p.max ? ' / ' + p.max : ''}</td></tr>`).join('') +
+        (g.note ? `<tr><td colspan="2" style="color:var(--warn);">${escapeHtml(g.note)}</td></tr>` : '');
+    }
+
+    function showRecordDetail(id) {
+      const rec = reportRecords.find(r => r.id === id);
+      if (!rec) return;
+      const g = gradeOf(rec);
+      showModal(`${EMS_GRADER.MODULE_LABEL[rec.module]} | ${rec.scenarioName} — ${g.score}/10`,
+        `<p style="font-size:0.84rem; color:var(--text-muted); margin-bottom:10px;">${escapeHtml(rec.controlsText)}</p>
+         <table class="report-table breakdown"><thead><tr><th>Tiêu chí</th><th class="num">Điểm</th></tr></thead><tbody>${breakdownRows(g)}</tbody></table>`);
+    }
+
+    /* ---------------- Tiến độ & điểm dự kiến ---------------- */
+    function renderProgress() {
+      const conclusion = document.getElementById('conclusion').value;
+      const g = EMS_GRADER.gradeSubmission(reportRecords, conclusion);
+      const grid = document.getElementById('progressGrid');
+      grid.innerHTML = ['pf', 'qv', 'mva'].map(mod => {
+        const m = g.modules[mod];
+        const chips = [1, 2, 3].map(id => {
+          const s = m.scenarios[id];
+          const done = s.recordIndex >= 0;
+          const cls = !done ? 'todo' : s.score >= 10 ? 'full' : s.score >= 6 ? 'mid' : 'low';
+          return `<div class="scen-chip ${cls}" onclick="goToScenario('${mod}', ${id})" title="Mở kịch bản để làm lại">
+              <span>${escapeHtml(EMS_GRADER.SCENARIOS[mod][id].name)}</span>
+              <span class="pts">${done ? s.score + '/10' : 'Chưa làm'}</span>
+            </div>`;
+        }).join('');
+        return `<div class="progress-col"><div class="progress-col-title"><span>${m.label}</span><span>${m.total} / 30</span></div>${chips}</div>`;
+      }).join('');
+
+      document.getElementById('estScore').textContent = g.score10.toFixed(1);
+      document.getElementById('estPF').textContent = `${g.modules.pf.total} / 30`;
+      document.getElementById('estQV').textContent = `${g.modules.qv.total} / 30`;
+      document.getElementById('estMVA').textContent = `${g.modules.mva.total} / 30`;
+      document.getElementById('estNX').textContent = `${g.conclusion} / 10`;
+      return g;
+    }
+
+    function onConclusionInput() {
+      const n = document.getElementById('conclusion').value.replace(/\s+/g, ' ').trim().length;
+      const el = document.getElementById('conclusionCount');
+      el.textContent = `${n} / 400 ký tự`;
+      el.style.color = n >= 400 ? 'var(--ok)' : 'var(--text-muted)';
+      renderProgress();
+      saveDraft();
+    }
+
+    function goToScenario(mod, id) {
+      const tabId = { pf: 'tab-pf', qv: 'tab-qv', mva: 'tab-mva' }[mod];
+      switchTab(tabId, document.getElementById('tabbtn-' + mod));
+      if (mod === 'pf') loadPFScenario(id);
+      if (mod === 'qv') loadQVScenario(id);
+      if (mod === 'mva') loadMVAScenario(id);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function exportCSVReport() {
       const name = document.getElementById('studentName').value.trim() || 'Chua_nhap_ten';
       const mssv = document.getElementById('studentId').value.trim() || 'Chua_nhap_MSSV';
+      const cls = document.getElementById('studentClass').value.trim();
 
       if (reportRecords.length === 0) {
         alert('Bạn chưa ghi nhận kịch bản nào vào bảng báo cáo! Hãy nhấn nút "Ghi nhận Kịch bản vào Báo cáo" ở từng phân hệ trước khi xuất file.');
         return;
       }
 
-      let csvContent = '\uFEFF'; // BOM cho tiếng Việt trên Excel
+      const q = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+      const g = EMS_GRADER.gradeSubmission(reportRecords, document.getElementById('conclusion').value);
+      let csvContent = '﻿'; // BOM cho tiếng Việt trên Excel
       csvContent += `BAO CAO THUC HANH DIEU DO HE THONG DIEN\n`;
-      csvContent += `Ho va ten sinh vien:,${name},MSSV / Lop:,${mssv}\n\n`;
-      csvContent += `Thoi gian,Phan he & Kich ban,Thong so Dieu khien,Chi so Dat duoc,Danh gia An ninh\n`;
+      csvContent += `Ho va ten sinh vien:,${q(name)},MSSV:,${q(mssv)},Lop:,${q(cls)}\n`;
+      csvContent += `Diem du kien (he 10):,${g.score10},P-f:,${g.modules.pf.total}/30,Q-V:,${g.modules.qv.total}/30,MVA-OPF:,${g.modules.mva.total}/30,Nhan xet:,${g.conclusion}/10\n\n`;
+      csvContent += `Thoi gian,Phan he & Kich ban,Thong so Dieu khien,Chi so Dat duoc,Danh gia An ninh,Diem du kien,Ghi chu\n`;
 
       reportRecords.forEach(r => {
-        csvContent += `"${r.time}","${r.module}","${r.controls}","${r.metrics}","${r.status}"\n`;
+        csvContent += [r.time, `${EMS_GRADER.MODULE_LABEL[r.module]} | ${r.scenarioName}`, r.controlsText, r.metricsText, r.status, gradeOf(r).score + '/10', r.note].map(q).join(',') + '\n';
       });
+      csvContent += `\nNhan xet & Ket luan:\n${q(document.getElementById('conclusion').value)}\n`;
 
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
@@ -1744,14 +2442,263 @@
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      addScadaLog('XUẤT FILE', `Đã xuất tệp báo cáo thực hành cho sinh viên: ${name} (${mssv}).`);
+      URL.revokeObjectURL(url);
+      addScadaLog('XUẤT FILE', `Đã xuất tệp báo cáo thực hành cho sinh viên: ${escapeHtml(name)} (${escapeHtml(mssv)}).`);
     }
 
-    // Khởi tạo toàn bộ 3 phân hệ khi mở trang
+    /* =====================================================================
+       HỘP THOẠI
+       ===================================================================== */
+    function showModal(title, bodyHtml, actions) {
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalBody').innerHTML = bodyHtml;
+      const box = document.getElementById('modalActions');
+      box.innerHTML = '';
+      (actions || [{ label: 'Đóng', cls: 'btn-secondary', onClick: closeModal }]).forEach(a => {
+        const b = document.createElement('button');
+        b.className = 'btn ' + a.cls;
+        b.textContent = a.label;
+        b.onclick = a.onClick;
+        box.appendChild(b);
+      });
+      document.getElementById('modalBackdrop').classList.add('show');
+    }
+
+    function closeModal() {
+      document.getElementById('modalBackdrop').classList.remove('show');
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    /* =====================================================================
+       NỘP BÀI LÊN MÁY CHỦ (GOOGLE APPS SCRIPT)
+       ===================================================================== */
+    function openSubmitPanel() {
+      if (document.getElementById('tab-board').classList.contains('active')) {
+        switchTab('tab-pf', document.getElementById('tabbtn-pf'));
+      }
+      document.getElementById('submitPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    async function apiGet(params) {
+      const url = SUBMIT_API_URL + '?' + new URLSearchParams(params).toString();
+      const res = await fetch(url, { method: 'GET' });
+      return res.json();
+    }
+
+    async function loadServerInfo() {
+      const el = document.getElementById('serverStatus');
+      const attemptsEl = document.getElementById('estAttempts');
+      if (!SUBMIT_API_URL) {
+        el.innerHTML = '<span style="color:var(--warn);">Chưa kết nối máy chủ nộp bài (GV chưa cấu hình)</span>';
+        return;
+      }
+      try {
+        const mssv = document.getElementById('studentId').value.trim();
+        serverInfo = await apiGet({ action: 'info', mssv });
+        const parts = [serverInfo.open ? '<span style="color:var(--ok);">● Đang nhận bài</span>' : '<span style="color:var(--danger);">● Đã khóa nộp bài</span>'];
+        if (serverInfo.deadline) parts.push('Hạn nộp: ' + escapeHtml(serverInfo.deadline));
+        parts.push('Tối đa ' + serverInfo.maxSubmissions + ' lượt');
+        parts.push(serverInfo.scoreMode === 'lan_cuoi' ? 'Tính điểm lần nộp cuối' : 'Tính điểm lần nộp cao nhất');
+        el.innerHTML = parts.join(' · ');
+        attemptsEl.textContent = mssv ? `${serverInfo.used} / ${serverInfo.maxSubmissions}` : `– / ${serverInfo.maxSubmissions}`;
+      } catch (e) {
+        el.innerHTML = '<span style="color:var(--danger);">Không kết nối được máy chủ nộp bài</span>';
+      }
+    }
+
+    function submitWork() {
+      const name = document.getElementById('studentName').value.trim();
+      const mssv = document.getElementById('studentId').value.trim();
+      const cls = document.getElementById('studentClass').value.trim();
+
+      if (!SUBMIT_API_URL) {
+        showModal('Chưa thể nộp bài', '<p>Giảng viên chưa cấu hình máy chủ nộp bài cho trang này. Hãy <b>Xuất Báo cáo (.CSV)</b> và nộp theo hướng dẫn của giảng viên.</p>');
+        return;
+      }
+      if (name.length < 3 || !mssv) {
+        showModal('Thiếu thông tin', '<p>Vui lòng nhập đầy đủ <b>Họ và tên</b> và <b>MSSV</b> ở góc trên bên phải trước khi nộp bài.</p>');
+        document.getElementById(name.length < 3 ? 'studentName' : 'studentId').focus();
+        return;
+      }
+      if (reportRecords.length === 0) {
+        showModal('Chưa có bản ghi', '<p>Bạn chưa ghi nhận kịch bản nào. Hãy thực hiện thao tác điều độ và bấm <b>Ghi nhận Kịch bản vào Báo cáo</b> ở từng phân hệ.</p>');
+        return;
+      }
+
+      const g = renderProgress();
+      const missing = [];
+      ['pf', 'qv', 'mva'].forEach(mod => [1, 2, 3].forEach(id => {
+        if (g.modules[mod].scenarios[id].recordIndex < 0) missing.push(`${EMS_GRADER.MODULE_LABEL[mod]} KB${id}`);
+      }));
+      const left = serverInfo ? serverInfo.maxSubmissions - serverInfo.used : null;
+
+      showModal('Xác nhận nộp bài',
+        `<table class="report-table breakdown">
+           <tbody>
+             <tr><td>Sinh viên</td><td>${escapeHtml(name)} — ${escapeHtml(mssv)}${cls ? ' — ' + escapeHtml(cls) : ''}</td></tr>
+             <tr><td>Số bản ghi</td><td>${reportRecords.length}</td></tr>
+             <tr><td>Điểm dự kiến</td><td><b>${g.score10.toFixed(1)} / 10</b> (${g.total100}/100)</td></tr>
+             ${missing.length ? `<tr><td>Kịch bản chưa làm</td><td style="color:var(--warn);">${missing.join(', ')}</td></tr>` : ''}
+             ${g.conclusion < 10 ? `<tr><td>Nhận xét</td><td style="color:var(--warn);">Mới đạt ${g.conclusion}/10 (cần ≥ 400 ký tự)</td></tr>` : ''}
+             ${left !== null ? `<tr><td>Lượt nộp còn lại</td><td>${left} / ${serverInfo.maxSubmissions}</td></tr>` : ''}
+           </tbody>
+         </table>
+         <p style="font-size:0.82rem; color:var(--text-muted); margin-top:10px;">Máy chủ sẽ chấm lại từ thông số điều khiển. Mỗi lần bấm nộp tính 1 lượt.</p>`,
+        [
+          { label: 'Quay lại chỉnh sửa', cls: 'btn-secondary', onClick: closeModal },
+          { label: 'Xác nhận nộp', cls: 'btn-success', onClick: () => doSubmit(name, mssv, cls) }
+        ]);
+    }
+
+    async function doSubmit(name, mssv, cls) {
+      closeModal();
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.textContent = 'Đang nộp bài...';
+      try {
+        const payload = {
+          name, mssv, className: cls,
+          conclusion: document.getElementById('conclusion').value,
+          records: reportRecords.map(r => ({ module: r.module, scenario: r.scenario, controls: r.controls, hintUsed: !!r.hintUsed, note: r.note })),
+          clientVersion: EMS_GRADER.VERSION
+        };
+        // Gửi dạng text/plain để tránh preflight CORS với Google Apps Script
+        const res = await fetch(SUBMIT_API_URL, { method: 'POST', body: JSON.stringify(payload) });
+        const data = await res.json();
+        if (!data.ok) {
+          showModal('Nộp bài không thành công', `<p style="color:var(--danger);">${escapeHtml(data.error || 'Lỗi không xác định')}</p>`);
+          addScadaLog('NỘP BÀI', `Thất bại: ${escapeHtml(data.error || '')}`);
+          return;
+        }
+        addScadaLog('NỘP BÀI', `Nộp thành công lần ${data.attempt}: ${data.grading.score10.toFixed(1)}/10.`);
+        showSubmitResult(data);
+      } catch (e) {
+        showModal('Lỗi kết nối', '<p>Không gửi được bài lên máy chủ. Kiểm tra kết nối mạng rồi thử lại. Bài làm vẫn được lưu trên trình duyệt.</p>');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Nộp bài cho Giảng viên';
+        loadServerInfo();
+      }
+    }
+
+    function showSubmitResult(data) {
+      const g = data.grading;
+      const rows = ['pf', 'qv', 'mva'].map(mod => {
+        const m = g.modules[mod];
+        return [1, 2, 3].map(id => {
+          const s = m.scenarios[id];
+          const details = s.parts.map(p => `${escapeHtml(p.label)}: ${p.pts}${p.max ? '/' + p.max : ''}`).join('<br>') || escapeHtml(s.note);
+          return `<tr><td>${m.label} — ${escapeHtml(EMS_GRADER.SCENARIOS[mod][id].name)}</td><td style="font-size:0.76rem; color:var(--text-muted);">${details}</td><td class="num"><span class="score-pill ${pillClass(s.score)}">${s.score}/10</span></td></tr>`;
+        }).join('');
+      }).join('');
+      const official = Number(data.officialScore);
+      showModal(`Nộp bài thành công — lần ${data.attempt}/${data.maxSubmissions}`,
+        `<div style="display:flex; gap:24px; align-items:flex-end; margin-bottom:14px; flex-wrap:wrap;">
+           <div><div style="font-size:0.75rem; color:var(--text-muted);">ĐIỂM LẦN NỘP NÀY</div><div class="score-big">${g.score10.toFixed(1)}</div></div>
+           <div><div style="font-size:0.75rem; color:var(--text-muted);">ĐIỂM CHÍNH THỨC (${data.scoreMode === 'lan_cuoi' ? 'lần cuối' : 'cao nhất'})</div><div class="score-big" style="color:var(--ok);">${official.toFixed(1)}</div></div>
+           <div style="font-size:0.8rem; color:var(--text-muted);">Nộp lúc ${escapeHtml(data.submittedAt)}</div>
+         </div>
+         <div style="max-height:50vh; overflow-y:auto;">
+         <table class="report-table breakdown">
+           <thead><tr><th>Kịch bản</th><th>Chi tiết</th><th class="num">Điểm</th></tr></thead>
+           <tbody>${rows}<tr><td>Nhận xét &amp; Kết luận</td><td></td><td class="num"><span class="score-pill ${pillClass(g.conclusion)}">${g.conclusion}/10</span></td></tr></tbody>
+         </table>
+         </div>
+         ${data.published ? '' : '<p style="font-size:0.82rem; color:var(--warn); margin-top:10px;">Giảng viên chưa mở công bố bảng điểm.</p>'}`,
+        [
+          { label: 'Đóng', cls: 'btn-secondary', onClick: closeModal },
+          { label: 'Xem Bảng điểm', cls: 'btn-primary', onClick: () => { closeModal(); switchTab('tab-board', document.getElementById('tabbtn-board')); } }
+        ]);
+    }
+
+    /* =====================================================================
+       BẢNG ĐIỂM CÔNG BỐ TRỰC TUYẾN
+       ===================================================================== */
+    function maskId(id) {
+      id = String(id);
+      return id.length <= 4 ? id : id.slice(0, 2) + '•'.repeat(id.length - 4) + id.slice(-2);
+    }
+
+    async function loadBoard() {
+      const body = document.getElementById('boardBody');
+      if (!SUBMIT_API_URL) {
+        body.innerHTML = '<tr><td colspan="11" style="text-align:center; color:var(--text-muted);">Giảng viên chưa cấu hình máy chủ bảng điểm.</td></tr>';
+        return;
+      }
+      try {
+        const data = await apiGet({ action: 'scores' });
+        if (!data.published) {
+          boardRows = [];
+          body.innerHTML = '<tr><td colspan="11" style="text-align:center; color:var(--text-muted);">Giảng viên chưa công bố bảng điểm.</td></tr>';
+          document.getElementById('boardStats').textContent = '';
+          return;
+        }
+        boardRows = data.rows || [];
+        document.getElementById('boardUpdated').textContent = 'Cập nhật: ' + (data.updated || '');
+        const sel = document.getElementById('boardClass');
+        const cur = sel.value;
+        const classes = [...new Set(boardRows.map(r => r.cls).filter(Boolean))].sort();
+        sel.innerHTML = '<option value="">Tất cả các lớp</option>' + classes.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+        sel.value = classes.includes(cur) ? cur : '';
+        renderBoard();
+      } catch (e) {
+        body.innerHTML = '<tr><td colspan="11" style="text-align:center; color:var(--danger);">Không tải được bảng điểm. Thử lại sau.</td></tr>';
+      }
+    }
+
+    function renderBoard() {
+      const body = document.getElementById('boardBody');
+      const term = document.getElementById('boardSearch').value.trim().toLowerCase();
+      const cls = document.getElementById('boardClass').value;
+      const myName = document.getElementById('studentName').value.trim().toLowerCase();
+      const rawId = document.getElementById('studentId').value.trim().toUpperCase();
+      const myId = maskId(rawId);
+
+      const rows = boardRows
+        .filter(r => !cls || r.cls === cls)
+        .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name, 'vi'));
+      let rank = 0, prev = null;
+      rows.forEach((r, i) => { if (r.score !== prev) { rank = i + 1; prev = r.score; } r.rank = rank; });
+      const shown = rows.filter(r => !term || r.name.toLowerCase().includes(term) || String(r.mssv).toLowerCase().includes(term));
+
+      if (!shown.length) {
+        body.innerHTML = `<tr><td colspan="11" style="text-align:center; color:var(--text-muted);">${boardRows.length ? 'Không có kết quả phù hợp.' : 'Chưa có sinh viên nào nộp bài.'}</td></tr>`;
+      } else {
+        const medal = ['', '🥇', '🥈', '🥉'];
+        body.innerHTML = shown.map(r => {
+          const me = myName && r.name.toLowerCase() === myName && (r.mssv === myId || String(r.mssv).toUpperCase() === rawId);
+          return `<tr class="${me ? 'me' : ''}">
+            <td class="num rank-medal">${medal[r.rank] || r.rank}</td>
+            <td style="font-family:var(--font-sans);">${escapeHtml(r.name)}${me ? ' <span style="color:var(--accent);">(bạn)</span>' : ''}</td>
+            <td>${escapeHtml(r.mssv)}</td>
+            <td>${escapeHtml(r.cls)}</td>
+            <td class="num">${r.pf}</td>
+            <td class="num">${r.qv}</td>
+            <td class="num">${r.mva}</td>
+            <td class="num">${r.nx}</td>
+            <td class="num"><span class="score-pill ${r.score >= 8 ? 'pill-full' : r.score >= 5 ? 'pill-mid' : 'pill-low'}">${Number(r.score).toFixed(1)}</span>${r.adjusted ? ' <span title="Giảng viên đã điều chỉnh" style="color:var(--warn);">*</span>' : ''}</td>
+            <td class="num">${r.count}</td>
+            <td>${escapeHtml(r.updated)}</td>
+          </tr>`;
+        }).join('');
+      }
+      const scores = rows.map(r => Number(r.score));
+      document.getElementById('boardStats').textContent = scores.length
+        ? `Số SV đã nộp: ${scores.length} · Điểm TB: ${(scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(2)} · Cao nhất: ${Math.max(...scores).toFixed(1)} · (*) điểm đã được giảng viên điều chỉnh`
+        : '';
+    }
+
+    // Khởi tạo toàn bộ phân hệ khi mở trang
     window.onload = function() {
+      loadDraft();
       loadPFScenario(1);
       loadQVScenario(1);
       loadMVAScenario(1);
+      renderReportTable();
+      onConclusionInput();
+      document.getElementById('studentId').addEventListener('change', loadServerInfo);
+      loadServerInfo();
       addScadaLog('EMS CORE', 'Hệ thống mô phỏng Điều độ Quốc gia đã sẵn sàng vận hành.');
     };
   </script>
